@@ -1,0 +1,24 @@
+{
+  "name": "io.ludk.2d.extras",
+  "version": "0.1.1",
+  "displayName": "ludk2d-extras",
+  "description": "A bunch of Unity scripts to help people to create 2D games with no coding.",
+  "unity": "2019.3",
+  "type": "library",
+  "dependencies": {
+    "com.unity.2d.animation": "3.2.9",
+    "com.unity.2d.pixel-perfect": "2.1.0",
+    "com.unity.2d.psdimporter": "2.1.8",
+    "com.unity.2d.sprite": "1.0.0",
+    "com.unity.2d.spriteshape": "3.0.17",
+    "com.unity.2d.tilemap": "1.0.0",
+    "com.unity.textmeshpro": "2.1.4"
+  },
+ "samples": [
+    {
+        "displayName": "A Short Quest",  
+        "description": "An example using the LuDK 2d-extras scripts.",
+        "path": "Samples~/AShortQuest"
+    }
+ ]
+}
