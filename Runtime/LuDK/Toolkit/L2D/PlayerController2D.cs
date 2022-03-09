@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LuDK.Toolkit.L2D
 {
@@ -34,6 +35,7 @@ namespace LuDK.Toolkit.L2D
         public float jumpFactor = 1.4f;
         public Sprite jumpingSprite;
         public float durationConsideredAsGrounded = 0.2f;
+        public UnityEvent OnJump;
 
         private float animationEllapsedTime;
         private int currentSpriteIndex = 0;
@@ -98,6 +100,7 @@ namespace LuDK.Toolkit.L2D
                     body.AddForce(new Vector2(0, 500f * jumpFactor));
                     isJumping = true;
                     canLand = false;
+                    OnJump.Invoke();
                 }
             } else
             {
