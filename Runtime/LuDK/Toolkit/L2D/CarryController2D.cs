@@ -7,9 +7,6 @@ namespace LuDK.Toolkit.L2D
     [RequireComponent(typeof(PlayerController2D))]
     public class CarryController2D : MonoBehaviour
     {
-        public static string LAYER_NAME = "Carriable";
-
-        public LayerMask carryLayer;
         public bool carryOnFront = false;
         public bool alwaysOnTop = true;
         public CarryMethod carryMethod;
@@ -54,7 +51,7 @@ namespace LuDK.Toolkit.L2D
             if (thingToCarry == null)
             {
                 var carryable = collision.gameObject.GetComponents<Component>().OfType<Carryable>().FirstOrDefault<Carryable>();
-                if (carryable != null || carryLayer == (carryLayer | (1 << collision.gameObject.layer)))
+                if (carryable != null)
                 {
                     if (ignoreNextCollisionDelay > 0f)
                     {
@@ -228,8 +225,6 @@ namespace LuDK.Toolkit.L2D
         {
             GameObject newObj = PlayerController2D.CreateObject();
             var cc = newObj.AddComponent<CarryController2D>();
-            CreateLayer(CarryController2D.LAYER_NAME);
-            cc.carryLayer = 1 << LayerMask.NameToLayer(CarryController2D.LAYER_NAME);
             return newObj;
         }
 
@@ -252,7 +247,6 @@ namespace LuDK.Toolkit.L2D
         public static GameObject CreateObject()
         {
             GameObject newObj = new GameObject();
-            newObj.layer = LayerMask.NameToLayer(LAYER_NAME);
             newObj.name = "Carriable";
             newObj.transform.position = PlayerController2D.GetMiddleOfScreenWorldPos();
             var sr = newObj.AddComponent<SpriteRenderer>();
@@ -260,6 +254,7 @@ namespace LuDK.Toolkit.L2D
             sr.sortingLayerName = PlayerController2D.LAYER_MIDDLEGROUND;
             sr.sortingOrder = 1;
             newObj.AddComponent<PolygonCollider2D>();
+            newObj.AddComponent<CarriedObject2D>();
             UnityEditor.Selection.activeObject = newObj;
             return newObj;
         }
@@ -269,43 +264,7 @@ namespace LuDK.Toolkit.L2D
         {
             return UnityEditor.Selection.activeObject is Sprite && UnityEditor.Selection.objects.Length == 1;
         }
-
-
-        private static int _maxLayers = 31;
-
-        public static void CreateLayer(string layerName)
-        {
-            var tagManager = new UnityEditor.SerializedObject(UnityEditor.AssetDatabase.LoadMainAssetAtPath("ProjectSettings/TagManager.asset"));
-            var layersProp = tagManager.FindProperty("layers");
-            if (!PropertyExists(layersProp, 0, _maxLayers, layerName))
-            {
-                // Start at layer 9th index -> 8 (zero based) => first 8 reserved for unity / greyed out
-                for (int i = 8; i < _maxLayers; i++)
-                {
-                    var sp = layersProp.GetArrayElementAtIndex(i);
-                    if (sp.stringValue == "")
-                    {
-                        sp.stringValue = layerName;
-                        tagManager.ApplyModifiedProperties();
-                        return;
-                    }
-                }
-                Debug.LogError("All allowed layers have been already filled");
-            }
-        }
-
-        private static bool PropertyExists(UnityEditor.SerializedProperty property, int start, int end, string value)
-        {
-            for (int i = start; i < end; i++)
-            {
-                UnityEditor.SerializedProperty t = property.GetArrayElementAtIndex(i);
-                if (t.stringValue.Equals(value))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+                       
 #endif
     }
 }

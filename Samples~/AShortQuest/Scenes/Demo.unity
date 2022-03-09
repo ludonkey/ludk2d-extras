@@ -2916,6 +2916,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_L0_01 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4973705198769716293, guid: 65941fdce3f263340b7867c753d498c6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4973705198769716300, guid: 65941fdce3f263340b7867c753d498c6,
         type: 3}
       propertyPath: target
@@ -6656,7 +6661,7 @@ GameObject:
   - component: {fileID: 375188134}
   - component: {fileID: 375188136}
   - component: {fileID: 375188135}
-  m_Layer: 0
+  m_Layer: 31
   m_Name: Stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14696,7 +14701,8 @@ GameObject:
   - component: {fileID: 911215802}
   - component: {fileID: 911215801}
   - component: {fileID: 911215804}
-  m_Layer: 8
+  - component: {fileID: 911215805}
+  m_Layer: 0
   m_Name: YellowKey
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14815,6 +14821,33 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &911215805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911215800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef857f6e27464d488e3c42d155dbe9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alwaysOnTop: 0
+  deltaXFront: 0.3
+  deltaYFront: 0
+  deltaXBack: -0.3
+  deltaYBack: 0
+  holdingRotation: 0
+  onActionStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onActionRun:
+    m_PersistentCalls:
+      m_Calls: []
+  onActionEnd:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &918328897
 GameObject:
   m_ObjectHideFlags: 0
@@ -15241,6 +15274,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Enemy_L0_02 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4973705198769716293, guid: 65941fdce3f263340b7867c753d498c6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4973705198769716300, guid: 65941fdce3f263340b7867c753d498c6,
         type: 3}
@@ -17253,9 +17291,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3179c701f80c214f82c517f42b26982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carryLayer:
-    serializedVersion: 2
-    m_Bits: 256
   carryOnFront: 0
   alwaysOnTop: 1
   carryMethod: 0
@@ -17313,12 +17348,12 @@ MonoBehaviour:
   animationDelay: 0.1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2147484160
   gravity2D: {x: 0, y: -40}
   jumpKey: 32
   jumpFactor: 1.4
   jumpingSprite: {fileID: 0}
-  durationConsideredAsGrounded: 0.2
+  durationConsideredAsGrounded: 0.1
   OnJump:
     m_PersistentCalls:
       m_Calls:
@@ -23416,7 +23451,7 @@ GameObject:
   - component: {fileID: 1772573853}
   - component: {fileID: 1772573852}
   - component: {fileID: 1772573851}
-  m_Layer: 0
+  m_Layer: 31
   m_Name: H_MiddleGround
   m_TagString: Untagged
   m_Icon: {fileID: 0}

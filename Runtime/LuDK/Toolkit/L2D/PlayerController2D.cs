@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LuDK.Toolkit.Core;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +11,9 @@ namespace LuDK.Toolkit.L2D
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(SpriteRenderer))]
     public class PlayerController2D : MonoBehaviour
-    {    
+    {
+        public static string GROUND_DEFAULT_LAYER = "Ground";
+
         public static string LAYER_BACKGROUND = "BackGround";
         public static string LAYER_MIDDLEGROUND = "MiddleGround";
         public static string LAYER_FOREGROUND = "ForeGround";
@@ -34,7 +37,7 @@ namespace LuDK.Toolkit.L2D
         public KeyCode jumpKey;
         public float jumpFactor = 1.4f;
         public Sprite jumpingSprite;
-        public float durationConsideredAsGrounded = 0.2f;
+        public float durationConsideredAsGrounded = 0.1f;
         public UnityEvent OnJump;
 
         private float animationEllapsedTime;
@@ -47,7 +50,7 @@ namespace LuDK.Toolkit.L2D
         private float forcedAnimationDelay;
 
         private Vector3 lastPosition { get; set; }
-        private ContactFilter2D contactFilter { get; set; }
+        private ContactFilter2D contactFilter;
         public bool consideredAsGrounded { get; private set; }
         private float timeWhereNoGrounded { get; set; }
 
@@ -62,6 +65,7 @@ namespace LuDK.Toolkit.L2D
         private void Awake()
         {
             contactFilter = new ContactFilter2D();
+            contactFilter.useLayerMask = true;
             contactFilter.SetLayerMask(groundLayer);
             Physics2D.gravity = gravity2D;
             body = GetComponent<Rigidbody2D>();
@@ -221,6 +225,10 @@ namespace LuDK.Toolkit.L2D
                 {
                     return true;
                 }
+                if (contactFilter.layerMask.value == 0)
+                {
+                    return false;
+                }
                 ContactPoint2D[] contactPoints = new ContactPoint2D[10];
                 int count = body.GetContacts(contactFilter, contactPoints);
                 for (int i = 0; i < count; ++i)
@@ -351,6 +359,7 @@ namespace LuDK.Toolkit.L2D
             {
                 pc = newObj.AddComponent<PlayerController2D>();
             }
+            pc.groundLayer = 1 << LayerMask.NameToLayer(GROUND_DEFAULT_LAYER);
             pc.sprites = new List<Sprite>();
             foreach (var oneObj in UnityEditor.Selection.objects)
             {

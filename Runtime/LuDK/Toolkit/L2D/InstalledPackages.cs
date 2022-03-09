@@ -12,6 +12,8 @@ namespace LuDK.Toolkit.L2D
     public static class InstalledPackages
     {
 #if UNITY_EDITOR
+        
+
         private static List<string> sortedlayers = new List<string>() { 
             PlayerController2D.LAYER_BACKGROUND,
             PlayerController2D.LAYER_MIDDLEGROUND,
@@ -27,6 +29,7 @@ namespace LuDK.Toolkit.L2D
         [InitializeOnLoadMethod]
         private static void InitializeOnLoad()
         {
+            CreateLayerIfNotExists(PlayerController2D.GROUND_DEFAULT_LAYER);
             var sortedLayers = GetSortingLayerNames().ToList();
             for (int i = 0; i < sortedlayers.Count; i ++) 
             {
@@ -56,6 +59,66 @@ namespace LuDK.Toolkit.L2D
             Type internalEditorUtilityType = typeof(InternalEditorUtility);
             PropertyInfo sortingLayersProperty = internalEditorUtilityType.GetProperty("sortingLayerNames", BindingFlags.Static | BindingFlags.NonPublic);
             return (string[])sortingLayersProperty.GetValue(null, new object[0]);
+        }
+
+        public static void CreateTag(string tag)
+        {
+            var asset = AssetDatabase.LoadMainAssetAtPath("ProjectSettings/TagManager.asset");
+            if (asset != null)
+            { // sanity checking
+                var so = new SerializedObject(asset);
+                var tags = so.FindProperty("tags");
+
+                var numTags = tags.arraySize;
+                // do not create duplicates
+                for (int i = 0; i < numTags; i++)
+                {
+                    var existingTag = tags.GetArrayElementAtIndex(i);
+                    if (existingTag.stringValue == tag) return;
+                }
+
+                tags.InsertArrayElementAtIndex(numTags);
+                tags.GetArrayElementAtIndex(numTags).stringValue = tag;
+                so.ApplyModifiedProperties();
+                so.Update();
+            }
+        }
+
+        private static int _maxLayersNumber = 32;
+
+        public static bool CreateLayerIfNotExists(string layerName)
+        {
+            var tagManager = new SerializedObject(AssetDatabase.LoadMainAssetAtPath("ProjectSettings/TagManager.asset"));
+            var layersProp = tagManager.FindProperty("layers");
+            if (!PropertyExists(layersProp, 0, _maxLayersNumber, layerName))
+            {
+                // Start at layer 9th index -> 8 (zero based) => first 8 reserved for unity / greyed out
+                for (int i = _maxLayersNumber - 1; i > 8; i--)
+                {
+                    var sp = layersProp.GetArrayElementAtIndex(i);
+                    if (sp.stringValue == "")
+                    {
+                        sp.stringValue = layerName;
+                        tagManager.ApplyModifiedProperties();
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+
+        private static bool PropertyExists(UnityEditor.SerializedProperty property, int start, int end, string value)
+        {
+            for (int i = start; i < end; i++)
+            {
+                SerializedProperty t = property.GetArrayElementAtIndex(i);
+                if (t.stringValue.Equals(value))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 #endif
     }
