@@ -93,6 +93,7 @@ namespace LuDK.Toolkit.L2D
             CreateTileMap(newGrid, PlayerController2D.LAYER_BACKGROUND);
             GameObject mGround = CreateTileMap(newGrid, PlayerController2D.LAYER_MIDDLEGROUND);
             mGround.AddComponent<UnityEngine.Tilemaps.TilemapCollider2D>();
+            mGround.layer = LayerMask.NameToLayer(PlayerController2D.GROUND_DEFAULT_LAYER);
             CreateTileMap(newGrid, PlayerController2D.LAYER_FOREGROUND);
 
             UnityEditor.Selection.activeObject = newGrid;

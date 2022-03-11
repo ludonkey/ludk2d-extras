@@ -24,10 +24,10 @@ namespace LuDK.Toolkit.L2D
         {
             if (player != null && sprites != null && sprites.Count > 0)
             {
-                player.runSpeed = runSpeed;
+                player.moveSpeed = runSpeed;
                 player.flipAnimation = flipAnimation;
                 player.sprites = sprites;
-                player.animationDelay = animationDelay;
+                player.animationTimeInBetween = animationDelay;
                 player.GetComponent<SpriteRenderer>().sprite = player.sprites[0];
             }
         }

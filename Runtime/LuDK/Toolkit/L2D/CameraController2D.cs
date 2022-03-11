@@ -54,13 +54,13 @@ namespace LuDK.Toolkit.L2D
             }
             if (player)
             {
-                if (player.gameType == GameType2D.SideScroller)
+                if (player.gameType == GameType2D.Platformer)
                 {
-                    if (!player.isJumping && timeToWaitAfterLanding > 0f)
+                    if (!player.consideredAsInTheAir && timeToWaitAfterLanding > 0f)
                     {
                         timeToWaitAfterLanding -= Time.deltaTime;
                     }
-                    else if (player.isJumping)
+                    else if (player.consideredAsInTheAir)
                     {
                         timeToWaitAfterLanding = landingTimeForFollowingY;
                     }
@@ -68,7 +68,7 @@ namespace LuDK.Toolkit.L2D
                 if (waitingDelay == 0.0f)
                 {
                     Vector3 targetPos = player.transform.position;
-                    if (player.gameType == GameType2D.SideScroller && timeToWaitAfterLanding > 0)
+                    if (player.gameType == GameType2D.Platformer && timeToWaitAfterLanding > 0)
                     {
                         targetPos.y = transform.position.y;
                     }

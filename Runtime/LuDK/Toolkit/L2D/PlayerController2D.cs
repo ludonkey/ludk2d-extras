@@ -26,19 +26,22 @@ namespace LuDK.Toolkit.L2D
         private float moveLimiter = 0.7f;
       
         public GameType2D gameType = GameType2D.TopDown;
-        public float runSpeed = 3.0f;
+        public float moveSpeed = 3.0f;
         public bool flipAnimation = false;
         public List<Sprite> sprites;
-        public float animationDelay = 0.1f;
+        public float animationTimeInBetween = 0.1f;
 
-        [Header("Only for SideScroller")]
+        [Header("Only for Platformer")]
+        public float durationInTheAirConsideredAsGrounded = 0.2f;
+        private bool gracePeriodForJumpEnable;
         public LayerMask groundLayer;
         public Vector2 gravity2D = new Vector2(0, -40);
         public KeyCode jumpKey;
         public float jumpFactor = 1.4f;
-        public Sprite jumpingSprite;
-        public float durationConsideredAsGrounded = 0.1f;
+        public List<Sprite> inTheAirSprites;
+        public float inTheAirAnimationTimeInBetween = 0.1f;
         public UnityEvent OnJump;
+        public UnityEvent OnLand;
 
         private float animationEllapsedTime;
         private int currentSpriteIndex = 0;
@@ -51,8 +54,9 @@ namespace LuDK.Toolkit.L2D
 
         private Vector3 lastPosition { get; set; }
         private ContactFilter2D contactFilter;
+
         public bool consideredAsGrounded { get; private set; }
-        private float timeWhereNoGrounded { get; set; }
+        private float timeInTheAir { get; set; }
 
         void Reset()
         {
@@ -64,6 +68,11 @@ namespace LuDK.Toolkit.L2D
 
         private void Awake()
         {
+            gracePeriodForJumpEnable = true;
+            if (sprites == null)
+                sprites = new List<Sprite>();
+            if (inTheAirSprites == null)
+                inTheAirSprites = new List<Sprite>();
             contactFilter = new ContactFilter2D();
             contactFilter.useLayerMask = true;
             contactFilter.SetLayerMask(groundLayer);
@@ -76,35 +85,46 @@ namespace LuDK.Toolkit.L2D
 
         void Update()
         {
-            if (gameType == GameType2D.SideScroller)
+            if (gameType == GameType2D.Platformer)
             {
-                bool nowGrounded = isNowGrounded;
-                consideredAsGrounded = nowGrounded ? true : timeWhereNoGrounded <= durationConsideredAsGrounded;
-                if (nowGrounded)
+                bool physicallyGrounded = isNowGrounded;
+                consideredAsGrounded = physicallyGrounded || (gracePeriodForJumpEnable && (timeInTheAir <= durationInTheAirConsideredAsGrounded));
+
+                bool previousConsideredAsInTheAir = consideredAsInTheAir;
+                consideredAsInTheAir = !consideredAsGrounded;
+                if (previousConsideredAsInTheAir != consideredAsInTheAir)
                 {
-                    timeWhereNoGrounded = 0f;
-                    if (canLand)
+                    animationEllapsedTime = 0;
+                    currentSpriteIndex = 0;
+                    if (!consideredAsInTheAir)
                     {
-                        isJumping = false;
+                        gracePeriodForJumpEnable = true;
+                        OnLand.Invoke();
+                        //Debug.Log("OnLand");
                     }
                 }
-                else if (consideredAsGrounded) // but not nowGrounded
+                if (physicallyGrounded)
                 {
-                    timeWhereNoGrounded += Time.deltaTime;
-                    canLand = true;
+                    timeInTheAir = 0f;
+                }
+                else
+                {
+                    timeInTheAir += Time.deltaTime;
                 }
             }
             if (forcedAnimationDistanceToEllapsed <= 0f)
             {
                 horizontalMove = Input.GetAxisRaw("Horizontal"); // -1 is left
                 verticalMove = Input.GetAxisRaw("Vertical"); // -1 is down
-                if (gameType == GameType2D.SideScroller && Input.GetKeyDown(jumpKey) && consideredAsGrounded)
+                if (gameType == GameType2D.Platformer && Input.GetKeyDown(jumpKey) && consideredAsGrounded)
                 {
                     body.velocity = new Vector2(body.velocity.x, Math.Max(0, body.velocity.y));
                     body.AddForce(new Vector2(0, 500f * jumpFactor));
-                    isJumping = true;
-                    canLand = false;
+                    animationEllapsedTime = 0;
+                    currentSpriteIndex = 0;
+                    gracePeriodForJumpEnable = false;
                     OnJump.Invoke();
+                    //Debug.Log("OnJump");
                 }
             } else
             {
@@ -119,7 +139,7 @@ namespace LuDK.Toolkit.L2D
         }
 
         void FixedUpdate()
-        {            
+        {
             if (forcedAnimationDelay > 0)
             {
                 forcedAnimationDelay -= Time.fixedDeltaTime;
@@ -148,12 +168,12 @@ namespace LuDK.Toolkit.L2D
                         verticalMove *= moveLimiter;
                     }
                     body.velocity = new Vector2(
-                         horizontalMove * runSpeed * forcedAnimationSpeedFactor,
-                         verticalMove * runSpeed * forcedAnimationSpeedFactor);
+                         horizontalMove * moveSpeed * forcedAnimationSpeedFactor,
+                         verticalMove * moveSpeed * forcedAnimationSpeedFactor);
                     break;
-                case GameType2D.SideScroller:
+                case GameType2D.Platformer:
                     body.velocity = new Vector2(
-                         horizontalMove * runSpeed * forcedAnimationSpeedFactor,
+                         horizontalMove * moveSpeed * forcedAnimationSpeedFactor,
                          body.velocity.y);                
                     break;
             }
@@ -168,38 +188,38 @@ namespace LuDK.Toolkit.L2D
                 sr.flipX = flipAnimation;
             }
             // animated sprite
-            if (sprites != null && sprites.Count > 0 && !isJumping)
+            var spritesToUse = consideredAsInTheAir ? inTheAirSprites : sprites;
+            if (body.velocity.magnitude > 0.1f)
             {
-                if (body.velocity.magnitude > 0.1f)
+                animationEllapsedTime += Time.deltaTime;
+                if (animationEllapsedTime >= (consideredAsInTheAir ? inTheAirAnimationTimeInBetween : animationTimeInBetween))
                 {
-                    animationEllapsedTime += Time.deltaTime;
-                    if (animationEllapsedTime >= animationDelay)
-                    {
-                        animationEllapsedTime = 0;
-                        currentSpriteIndex++;
-                        if (currentSpriteIndex >= sprites.Count)
-                            currentSpriteIndex = 0;
-                    }
+                    animationEllapsedTime = 0;
+                    currentSpriteIndex++;
+                    if (currentSpriteIndex >= spritesToUse.Count)
+                        currentSpriteIndex = 0;
                 }
-                sr.sprite = sprites[currentSpriteIndex];
-            } else if (isJumping && jumpingSprite != null)
-            {
-                sr.sprite = jumpingSprite;
             }
+            if (spritesToUse.Count > currentSpriteIndex)
+            {
+                sr.sprite = spritesToUse[currentSpriteIndex];
+            }       
             lastPosition = transform.position;
         }
 
         public void SetSideScroller(bool isSideScroller)
         {
-            SetGameType(isSideScroller ? GameType2D.SideScroller : GameType2D.TopDown);
+            SetGameType(isSideScroller ? GameType2D.Platformer : GameType2D.TopDown);
         }
 
         public void SetGameType(GameType2D newGameType)
         {
 
             gameType = newGameType;
-            isJumping = false;
-            canLand = true;
+            if (gameType != GameType2D.Platformer)
+            {
+                consideredAsInTheAir = false;
+            }
             UpdateGravityScale();
         }
 
@@ -211,7 +231,7 @@ namespace LuDK.Toolkit.L2D
                 case GameType2D.TopDown:
                     body.gravityScale = 0;
                     break;
-                case GameType2D.SideScroller:
+                case GameType2D.Platformer:
                     body.gravityScale = 1;
                     break;
             }
@@ -243,8 +263,7 @@ namespace LuDK.Toolkit.L2D
             }
         }
 
-        public bool isJumping { get; private set; }
-        public bool canLand { get; private set; }
+        public bool consideredAsInTheAir { get; private set; }
 
         public bool IsFreeToMove()
         {
@@ -406,5 +425,5 @@ namespace LuDK.Toolkit.L2D
 public enum GameType2D
 {
     TopDown,
-    SideScroller
+    Platformer
 }
