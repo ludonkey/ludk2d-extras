@@ -17,8 +17,8 @@ namespace LuDK.Toolkit.L2D
         private float shakeEllapsedTime = 0f;
         public float shakeAmount = 0.1f;
 
-        [Header("Only for SideScroller")]
-        public float landingTimeForFollowingY = 0.05f;
+        [Header("Only for game type Platformer")]
+        public float durationPlayerGroundedBeforeFollowingY = 0.05f;
 
         private float waitingDelay { get; set; }
         public float timeToWaitAfterLanding { get; private set; }
@@ -62,7 +62,7 @@ namespace LuDK.Toolkit.L2D
                     }
                     else if (player.consideredAsInTheAir)
                     {
-                        timeToWaitAfterLanding = landingTimeForFollowingY;
+                        timeToWaitAfterLanding = durationPlayerGroundedBeforeFollowingY;
                     }
                 }
                 if (waitingDelay == 0.0f)
