@@ -68,7 +68,8 @@ namespace LuDK.Toolkit.L2D
                     originalLocalRotation = thingToCarry.transform.localEulerAngles;
                     if (carryable != null)
                     {
-                        thingToCarryAdvanced = carryable;                      
+                        thingToCarryAdvanced = carryable;
+                        thingToCarryAdvanced.OnTake();
                     }
                     OnTake.Invoke();
                 }
@@ -80,8 +81,12 @@ namespace LuDK.Toolkit.L2D
         /// </summary>
         public void Consume()
         {
-            if (null != thingToCarry)
+            if (null != thingToCarryAdvanced)
             {
+                thingToCarryAdvanced.OnConsume();
+            }
+            if (null != thingToCarry)
+            {            
                 OnConsume.Invoke();
                 thingToCarry.SetActive(false);
             }
@@ -123,13 +128,17 @@ namespace LuDK.Toolkit.L2D
                         body.velocity = Vector2.zero;
                     }
                     ignoreNextCollisionDelay = carryMethod == CarryMethod.Stick ? 0.5f : 0.0f;
+                    if (null != thingToCarryAdvanced)
+                    {
+                        thingToCarryAdvanced.OnDrop();
+                    }
+                    thingToCarryAdvanced = null;
                     thingToCarry.transform.position = gameObject.transform.position + new Vector3(player.IsLookingToRight() ? 0.5f : -0.5f, 0, 0);
                     thingToCarry.transform.localScale = originalLocalScale;
                     thingToCarry.transform.localEulerAngles = originalLocalRotation;
                     thingToCarry.GetComponent<Collider2D>().enabled = true;
                     thingToCarry.GetComponent<SpriteRenderer>().sortingOrder = originalSortingOrder;
                     thingToCarry = null;
-                    thingToCarryAdvanced = null;
                     OnDrop.Invoke();
                 }
                 else
@@ -214,6 +223,9 @@ namespace LuDK.Toolkit.L2D
             float GetDeltaY(bool front);
             float GetHoldingRotation();
             bool AlwaysOnTop();
+            void OnTake();
+            void OnDrop();
+            void OnConsume();
             void ActionStart();
             void ActionRun();
             void ActionEnd();

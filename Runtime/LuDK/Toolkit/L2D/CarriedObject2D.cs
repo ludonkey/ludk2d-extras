@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 namespace LuDK.Toolkit.L2D
 {
-    public class CarriedObject2D : MonoBehaviour, CarryController2D.Carryable
+    public class CarriedObject2D : MonoBehaviour, CarryController2D. Carryable
     {
         public bool alwaysOnTop = false;
         public float deltaXFront = 0.3f;
@@ -11,33 +11,29 @@ namespace LuDK.Toolkit.L2D
         public float deltaXBack = -0.3f;
         public float deltaYBack = 0.0f;
         public float holdingRotation = 0.0f;
+        [Header("On Carrying Events")]
+        public UnityEvent OnTake;
+        public UnityEvent OnDrop;
+        public UnityEvent OnConsume;
 
+        [Header("On Action Events")]
         public UnityEvent onActionStart;
         public UnityEvent onActionRun;
         public UnityEvent onActionEnd;
 
         public void ActionStart()
         {
-            if (onActionStart != null)
-            {
-                onActionStart.Invoke();
-            }
+            onActionStart?.Invoke();
         }
 
         public void ActionRun()
         {
-            if (onActionRun != null)
-            {
-                onActionRun.Invoke();
-            }
+            onActionRun?.Invoke();
         }
 
         public void ActionEnd()
         {
-            if (onActionEnd != null)
-            {
-                onActionEnd.Invoke();
-            }
+            onActionEnd?.Invoke();
         }
 
         public bool AlwaysOnTop()
@@ -58,6 +54,21 @@ namespace LuDK.Toolkit.L2D
         public float GetHoldingRotation()
         {
             return holdingRotation;
+        }
+
+        void CarryController2D.Carryable.OnTake()
+        {
+            OnTake?.Invoke();
+        }
+
+        void CarryController2D.Carryable.OnDrop()
+        {
+            OnDrop?.Invoke();
+        }
+
+        void CarryController2D.Carryable.OnConsume()
+        {
+            OnConsume?.Invoke();
         }
     }
 }

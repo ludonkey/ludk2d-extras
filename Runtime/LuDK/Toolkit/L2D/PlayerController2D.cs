@@ -1,6 +1,4 @@
-﻿using LuDK.Toolkit.Core;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
@@ -27,19 +25,28 @@ namespace LuDK.Toolkit.L2D
       
         public GameType2D gameType = GameType2D.TopDown;
         public float moveSpeed = 3.0f;
+        public float MoveSpeed { get { return skin != null ? skin.MoveSpeed() : moveSpeed; } }
         public bool flipAnimation = false;
+        public bool FlipAnimation { get { return skin != null ? skin.FlipAnimation() : flipAnimation; } }
         public List<Sprite> sprites;
+        public List<Sprite> Sprites { get { return skin != null ? skin.Sprites() : sprites; } }
         public float animationTimeInBetween = 0.1f;
+        public float AnimationTimeInBetween { get { return skin != null ? skin.AnimationTimeInBetween() : animationTimeInBetween; } }
 
         [Header("Only for Platformer")]
         public float durationInTheAirConsideredAsGrounded = 0.2f;
         private bool gracePeriodForJumpEnable;
         public LayerMask groundLayer;
+        public LayerMask GroundLayer { get { return skin != null ? skin.GroundLayer() : groundLayer; } }
         public Vector2 gravity2D = new Vector2(0, -40);
+        public Vector2 Gravity2D { get { return skin != null ? skin.Gravity2D() : gravity2D; } }
         public KeyCode jumpKey;
         public float jumpFactor = 1.4f;
+        public float JumpFactor { get { return skin != null ? skin.JumpFactor() : jumpFactor; } }
         public List<Sprite> inTheAirSprites;
+        public List<Sprite> InTheAirSprites { get { return skin != null ? skin.InTheAirSprites() : inTheAirSprites; } }
         public float inTheAirAnimationTimeInBetween = 0.1f;
+        public float InTheAirAnimationTimeInBetween { get { return skin != null ? skin.InTheAirAnimationTimeInBetween() : inTheAirAnimationTimeInBetween; } }
         public UnityEvent OnJump;
         public UnityEvent OnLand;
 
@@ -58,6 +65,24 @@ namespace LuDK.Toolkit.L2D
         public bool consideredAsGrounded { get; private set; }
         private float timeInTheAir { get; set; }
 
+        private ISkin2D internalSkin;
+
+        public ISkin2D skin
+        {
+            get
+            {
+                return internalSkin;
+            }
+            set
+            {
+                internalSkin = value;
+                animationEllapsedTime = 0;
+                currentSpriteIndex = 0;
+                contactFilter.SetLayerMask(GroundLayer);
+                Physics2D.gravity = Gravity2D;
+            }
+        }
+
         void Reset()
         {
             if (jumpKey == KeyCode.None)
@@ -75,8 +100,8 @@ namespace LuDK.Toolkit.L2D
                 inTheAirSprites = new List<Sprite>();
             contactFilter = new ContactFilter2D();
             contactFilter.useLayerMask = true;
-            contactFilter.SetLayerMask(groundLayer);
-            Physics2D.gravity = gravity2D;
+            contactFilter.SetLayerMask(GroundLayer);
+            Physics2D.gravity = Gravity2D;
             body = GetComponent<Rigidbody2D>();
             sr = GetComponent<SpriteRenderer>();
             SetGameType(gameType);
@@ -119,7 +144,7 @@ namespace LuDK.Toolkit.L2D
                 if (gameType == GameType2D.Platformer && Input.GetKeyDown(jumpKey) && consideredAsGrounded)
                 {
                     body.velocity = new Vector2(body.velocity.x, Math.Max(0, body.velocity.y));
-                    body.AddForce(new Vector2(0, 500f * jumpFactor));
+                    body.AddForce(new Vector2(0, 500f * JumpFactor));
                     animationEllapsedTime = 0;
                     currentSpriteIndex = 0;
                     gracePeriodForJumpEnable = false;
@@ -168,12 +193,12 @@ namespace LuDK.Toolkit.L2D
                         verticalMove *= moveLimiter;
                     }
                     body.velocity = new Vector2(
-                         horizontalMove * moveSpeed * forcedAnimationSpeedFactor,
-                         verticalMove * moveSpeed * forcedAnimationSpeedFactor);
+                         horizontalMove * MoveSpeed * forcedAnimationSpeedFactor,
+                         verticalMove * MoveSpeed * forcedAnimationSpeedFactor);
                     break;
                 case GameType2D.Platformer:
                     body.velocity = new Vector2(
-                         horizontalMove * moveSpeed * forcedAnimationSpeedFactor,
+                         horizontalMove * MoveSpeed * forcedAnimationSpeedFactor,
                          body.velocity.y);                
                     break;
             }
@@ -181,18 +206,18 @@ namespace LuDK.Toolkit.L2D
             // flip X
             if (horizontalMove < 0)
             {
-                sr.flipX = !flipAnimation;
+                sr.flipX = !FlipAnimation;
             }
             else if (horizontalMove > 0)
             {
-                sr.flipX = flipAnimation;
+                sr.flipX = FlipAnimation;
             }
             // animated sprite
-            var spritesToUse = consideredAsInTheAir ? inTheAirSprites : sprites;
+            var spritesToUse = consideredAsInTheAir ? InTheAirSprites : Sprites;
             if (body.velocity.magnitude > 0.1f)
             {
                 animationEllapsedTime += Time.deltaTime;
-                if (animationEllapsedTime >= (consideredAsInTheAir ? inTheAirAnimationTimeInBetween : animationTimeInBetween))
+                if (animationEllapsedTime >= (consideredAsInTheAir ? InTheAirAnimationTimeInBetween : AnimationTimeInBetween))
                 {
                     animationEllapsedTime = 0;
                     currentSpriteIndex++;
@@ -272,7 +297,7 @@ namespace LuDK.Toolkit.L2D
 
         public bool IsLookingToRight()
         {
-            return !sr.flipX && !flipAnimation;
+            return !sr.flipX && !FlipAnimation;
         }
 
         private void ResetForcedAnimation()

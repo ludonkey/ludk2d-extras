@@ -3,32 +3,56 @@ using UnityEngine;
 
 namespace LuDK.Toolkit.L2D
 {
-    public class Skin2D : MonoBehaviour
+    public class Skin2D : MonoBehaviour, ISkin2D
     {
-        public float runSpeed = 3.0f;
+        public PlayerController2D player;
+
+        [Header("Properties")]
+        public float moveSpeed = 3.0f;
         public bool flipAnimation = false;
         public List<Sprite> sprites;
-        public float animationDelay = 0.1f;
+        public float animationTimeInBetween = 0.1f;
 
-        private PlayerController2D player { get; set; }
+        [Header("Only for Platformer")]
+        public LayerMask groundLayer;
+        public Vector2 gravity2D = new Vector2(0, -40);
+        public float jumpFactor = 1.4f;
+        public List<Sprite> inTheAirSprites;
+        public float inTheAirAnimationTimeInBetween = 0.1f;
 
-        void Start()
+        private void Awake()
         {
-            player = GameObject.FindObjectOfType<PlayerController2D>();
+            if (sprites == null)
+                sprites = new List<Sprite>();
+            if (inTheAirSprites == null)
+                inTheAirSprites = new List<Sprite>();
         }
 
-        /// <summary>
-        /// Call this method to apply this skin to the player.
-        /// </summary>
         public void Apply()
         {
-            if (player != null && sprites != null && sprites.Count > 0)
+            if (null == player)
             {
-                player.moveSpeed = runSpeed;
-                player.flipAnimation = flipAnimation;
-                player.sprites = sprites;
-                player.animationTimeInBetween = animationDelay;
-                player.GetComponent<SpriteRenderer>().sprite = player.sprites[0];
+                player = GetComponentInParent<PlayerController2D>();
+                if (null == player)
+                {
+                    player = GameObject.FindObjectOfType<PlayerController2D>();
+                }
+            }
+            if (player != null)
+            {
+                player.skin = this;
+            }
+            else
+            {
+                Debug.LogError("[Skin2D] Missing player");
+            }
+        }
+
+        public void Unapply()
+        {
+            if (null != player)
+            {
+                player.skin = null;
             }
         }
 
@@ -65,6 +89,64 @@ namespace LuDK.Toolkit.L2D
             var player = GameObject.FindObjectOfType<PlayerController2D>();
             return player != null;
         }
+
+        public float MoveSpeed()
+        {
+            return moveSpeed;
+        }
+
+        public bool FlipAnimation()
+        {
+            return flipAnimation;
+        }
+
+        public List<Sprite> Sprites()
+        {
+            return sprites;
+        }
+
+        public float AnimationTimeInBetween()
+        {
+            return animationTimeInBetween;
+        }
+
+        public LayerMask GroundLayer()
+        {
+            return groundLayer;
+        }
+
+        public Vector2 Gravity2D()
+        {
+            return gravity2D;
+        }
+
+        public float JumpFactor()
+        {
+            return jumpFactor;
+        }
+
+        public List<Sprite> InTheAirSprites()
+        {
+            return inTheAirSprites;
+        }
+
+        public float InTheAirAnimationTimeInBetween()
+        {
+            return inTheAirAnimationTimeInBetween;
+        }
 #endif
+    }
+
+    public interface ISkin2D {
+        float MoveSpeed();
+        bool FlipAnimation();
+        List<Sprite> Sprites();
+        float AnimationTimeInBetween();
+        //Only for Platformer
+        LayerMask GroundLayer();
+        Vector2 Gravity2D();
+        float JumpFactor();
+        List<Sprite> InTheAirSprites();
+        float InTheAirAnimationTimeInBetween();
     }
 }
