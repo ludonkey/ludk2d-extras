@@ -5,7 +5,7 @@ namespace LuDK.Toolkit.L2D
 {
     public class Skin2D : MonoBehaviour, ISkin2D
     {
-        public PlayerController2D player;
+        private PlayerController2D player;
         public bool applyOnStart = false;
 
         [Header("Properties")]
