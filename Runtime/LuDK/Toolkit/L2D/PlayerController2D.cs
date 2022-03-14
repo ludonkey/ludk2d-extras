@@ -26,20 +26,22 @@ namespace LuDK.Toolkit.L2D
         public GameType2D gameType = GameType2D.TopDown;
         public float moveSpeed = 3.0f;
         public float MoveSpeed { get { return skin != null ? skin.MoveSpeed() : moveSpeed; } }
-        public bool flipAnimation = false;
-        public bool FlipAnimation { get { return skin != null ? skin.FlipAnimation() : flipAnimation; } }
+        public bool flipXAnimation = false;
+        public bool FlipXAnimation { get { return skin != null ? skin.FlipXAnimation() : flipXAnimation; } }
+        public bool flipYAnimation = false;
+        public bool FlipYAnimation { get { return skin != null ? skin.FlipYAnimation() : flipYAnimation; } }
         public List<Sprite> sprites;
         public List<Sprite> Sprites { get { return skin != null ? skin.Sprites() : sprites; } }
         public float animationTimeInBetween = 0.1f;
         public float AnimationTimeInBetween { get { return skin != null ? skin.AnimationTimeInBetween() : animationTimeInBetween; } }
 
         [Header("Only for Platformer")]
+        public Vector2 worldGravity2D = new Vector2(0, -40);
+        public float gravityScale = 1f;
+        public float GravityScale { get { return skin != null ? skin.GravityScale() : gravityScale; } }
         public float durationInTheAirConsideredAsGrounded = 0.2f;
         private bool gracePeriodForJumpEnable;
         public LayerMask groundLayer;
-        public LayerMask GroundLayer { get { return skin != null ? skin.GroundLayer() : groundLayer; } }
-        public Vector2 gravity2D = new Vector2(0, -40);
-        public Vector2 Gravity2D { get { return skin != null ? skin.Gravity2D() : gravity2D; } }
         public KeyCode jumpKey;
         public float jumpFactor = 1.4f;
         public float JumpFactor { get { return skin != null ? skin.JumpFactor() : jumpFactor; } }
@@ -78,8 +80,7 @@ namespace LuDK.Toolkit.L2D
                 internalSkin = value;
                 animationEllapsedTime = 0;
                 currentSpriteIndex = 0;
-                contactFilter.SetLayerMask(GroundLayer);
-                Physics2D.gravity = Gravity2D;
+                UpdateGravityScale();
             }
         }
 
@@ -100,8 +101,8 @@ namespace LuDK.Toolkit.L2D
                 inTheAirSprites = new List<Sprite>();
             contactFilter = new ContactFilter2D();
             contactFilter.useLayerMask = true;
-            contactFilter.SetLayerMask(GroundLayer);
-            Physics2D.gravity = Gravity2D;
+            contactFilter.SetLayerMask(groundLayer);
+            Physics2D.gravity = worldGravity2D;
             body = GetComponent<Rigidbody2D>();
             sr = GetComponent<SpriteRenderer>();
             SetGameType(gameType);
@@ -143,8 +144,8 @@ namespace LuDK.Toolkit.L2D
                 verticalMove = Input.GetAxisRaw("Vertical"); // -1 is down
                 if (gameType == GameType2D.Platformer && Input.GetKeyDown(jumpKey) && consideredAsGrounded)
                 {
-                    body.velocity = new Vector2(body.velocity.x, Math.Max(0, body.velocity.y));
-                    body.AddForce(new Vector2(0, 500f * JumpFactor));
+                    body.velocity = new Vector2(body.velocity.x, 0);
+                    body.AddForce(new Vector2(0, 500f * JumpFactor * Mathf.Sign(GravityScale)));
                     animationEllapsedTime = 0;
                     currentSpriteIndex = 0;
                     gracePeriodForJumpEnable = false;
@@ -202,15 +203,15 @@ namespace LuDK.Toolkit.L2D
                          body.velocity.y);                
                     break;
             }
-
+            sr.flipY = FlipYAnimation;
             // flip X
             if (horizontalMove < 0)
             {
-                sr.flipX = !FlipAnimation;
+                sr.flipX = !FlipXAnimation;
             }
             else if (horizontalMove > 0)
             {
-                sr.flipX = FlipAnimation;
+                sr.flipX = FlipXAnimation;
             }
             // animated sprite
             var spritesToUse = consideredAsInTheAir ? InTheAirSprites : Sprites;
@@ -257,7 +258,7 @@ namespace LuDK.Toolkit.L2D
                     body.gravityScale = 0;
                     break;
                 case GameType2D.Platformer:
-                    body.gravityScale = 1;
+                    body.gravityScale = GravityScale;
                     break;
             }
         }
@@ -279,7 +280,7 @@ namespace LuDK.Toolkit.L2D
                 for (int i = 0; i < count; ++i)
                 {
 
-                    if (Vector2.Dot(Vector2.up, contactPoints[i].normal) > .3f)
+                    if (Vector2.Dot(Mathf.Sign(GravityScale) * Vector2.up, contactPoints[i].normal) > .3f)
                     {
                         return true;
                     }
@@ -297,7 +298,7 @@ namespace LuDK.Toolkit.L2D
 
         public bool IsLookingToRight()
         {
-            return !sr.flipX && !FlipAnimation;
+            return !sr.flipX && !FlipXAnimation;
         }
 
         private void ResetForcedAnimation()

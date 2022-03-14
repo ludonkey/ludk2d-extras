@@ -9,13 +9,13 @@ namespace LuDK.Toolkit.L2D
 
         [Header("Properties")]
         public float moveSpeed = 3.0f;
-        public bool flipAnimation = false;
+        public bool flipXAnimation = false;
+        public bool flipYAnimation = false;
         public List<Sprite> sprites;
         public float animationTimeInBetween = 0.1f;
 
         [Header("Only for Platformer")]
-        public LayerMask groundLayer;
-        public Vector2 gravity2D = new Vector2(0, -40);
+        public float gravityScale = 1f;
         public float jumpFactor = 1.4f;
         public List<Sprite> inTheAirSprites;
         public float inTheAirAnimationTimeInBetween = 0.1f;
@@ -95,9 +95,14 @@ namespace LuDK.Toolkit.L2D
             return moveSpeed;
         }
 
-        public bool FlipAnimation()
+        public bool FlipXAnimation()
         {
-            return flipAnimation;
+            return flipXAnimation;
+        }
+
+        public bool FlipYAnimation()
+        {
+            return flipYAnimation;
         }
 
         public List<Sprite> Sprites()
@@ -110,14 +115,9 @@ namespace LuDK.Toolkit.L2D
             return animationTimeInBetween;
         }
 
-        public LayerMask GroundLayer()
+        public float GravityScale()
         {
-            return groundLayer;
-        }
-
-        public Vector2 Gravity2D()
-        {
-            return gravity2D;
+            return gravityScale;
         }
 
         public float JumpFactor()
@@ -139,12 +139,12 @@ namespace LuDK.Toolkit.L2D
 
     public interface ISkin2D {
         float MoveSpeed();
-        bool FlipAnimation();
+        bool FlipXAnimation();
+        bool FlipYAnimation();
         List<Sprite> Sprites();
         float AnimationTimeInBetween();
         //Only for Platformer
-        LayerMask GroundLayer();
-        Vector2 Gravity2D();
+        float GravityScale();
         float JumpFactor();
         List<Sprite> InTheAirSprites();
         float InTheAirAnimationTimeInBetween();

@@ -13373,15 +13373,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1025625412}
   moveSpeed: 3
-  flipAnimation: 0
+  flipXAnimation: 0
+  flipYAnimation: 0
   sprites:
   - {fileID: 5832130118061997195, guid: ba7c9df867aeeb043b04417f70500c98, type: 3}
   - {fileID: 8149557099830141944, guid: ba7c9df867aeeb043b04417f70500c98, type: 3}
   animationTimeInBetween: 0.1
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 2147484160
-  gravity2D: {x: 0, y: -40}
+  gravityScale: 1
   jumpFactor: 1.4
   inTheAirSprites: []
   inTheAirAnimationTimeInBetween: 0.1
@@ -17398,7 +17396,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameType: 0
   moveSpeed: 3
-  flipAnimation: 0
+  flipXAnimation: 0
+  flipYAnimation: 0
   sprites:
   - {fileID: 8784198924934617523, guid: ffdeeb71be9391342a485b100ad1ae07, type: 3}
   - {fileID: 4897650366947717147, guid: ffdeeb71be9391342a485b100ad1ae07, type: 3}
@@ -17407,8 +17406,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 2147484160
-  gravity2D: {x: 0, y: -40}
+  worldGravity2D: {x: 0, y: -40}
   jumpKey: 32
+  gravityScale: 1
   jumpFactor: 1.4
   inTheAirSprites: []
   inTheAirAnimationTimeInBetween: 0.1
@@ -25126,7 +25126,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
