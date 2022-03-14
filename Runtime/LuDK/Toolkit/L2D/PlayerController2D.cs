@@ -81,6 +81,7 @@ namespace LuDK.Toolkit.L2D
                 animationEllapsedTime = 0;
                 currentSpriteIndex = 0;
                 UpdateGravityScale();
+                UpdateCurrentSprite();
             }
         }
 
@@ -200,9 +201,15 @@ namespace LuDK.Toolkit.L2D
                 case GameType2D.Platformer:
                     body.velocity = new Vector2(
                          horizontalMove * MoveSpeed * forcedAnimationSpeedFactor,
-                         body.velocity.y);                
+                         body.velocity.y);
                     break;
             }
+            UpdateCurrentSprite();
+            lastPosition = transform.position;
+        }
+
+        private void UpdateCurrentSprite()
+        {
             sr.flipY = FlipYAnimation;
             // flip X
             if (horizontalMove < 0)
@@ -229,8 +236,7 @@ namespace LuDK.Toolkit.L2D
             if (spritesToUse.Count > currentSpriteIndex)
             {
                 sr.sprite = spritesToUse[currentSpriteIndex];
-            }       
-            lastPosition = transform.position;
+            }
         }
 
         public void SetSideScroller(bool isSideScroller)

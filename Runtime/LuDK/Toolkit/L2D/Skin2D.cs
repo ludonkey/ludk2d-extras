@@ -6,6 +6,7 @@ namespace LuDK.Toolkit.L2D
     public class Skin2D : MonoBehaviour, ISkin2D
     {
         public PlayerController2D player;
+        public bool applyOnStart = false;
 
         [Header("Properties")]
         public float moveSpeed = 3.0f;
@@ -26,6 +27,12 @@ namespace LuDK.Toolkit.L2D
                 sprites = new List<Sprite>();
             if (inTheAirSprites == null)
                 inTheAirSprites = new List<Sprite>();
+        }
+
+        private void Start()
+        {
+            if (applyOnStart)
+                Apply();
         }
 
         public void Apply()
