@@ -7,8 +7,6 @@ namespace LuDK.Toolkit.L2D
     [RequireComponent(typeof(PlayerController2D))]
     public class CarryController2D : MonoBehaviour
     {
-        public bool carryOnFront = false;
-        public bool alwaysOnTop = true;
         public CarryMethod carryMethod;
         public KeyCode carryKey;
         public KeyCode actionKey;
@@ -16,8 +14,8 @@ namespace LuDK.Toolkit.L2D
         public UnityEvent OnDrop;
         public UnityEvent OnConsume;
 
-        private GameObject thingToCarry;
-        private Carryable thingToCarryAdvanced;
+        private Carryable thingToCarry;
+        private GameObject thingToCarryGO;
 
         private PlayerController2D player;
 
@@ -61,16 +59,13 @@ namespace LuDK.Toolkit.L2D
                     {
                         return;
                     }
-                    thingToCarry = collision.gameObject;
-                    originalSortingOrder = thingToCarry.GetComponent<SpriteRenderer>().sortingOrder;
-                    thingToCarry.GetComponent<Collider2D>().enabled = false;                   
-                    originalLocalScale = thingToCarry.transform.localScale;
-                    originalLocalRotation = thingToCarry.transform.localEulerAngles;
-                    if (carryable != null)
-                    {
-                        thingToCarryAdvanced = carryable;
-                        thingToCarryAdvanced.OnTake();
-                    }
+                    thingToCarry = carryable;
+                    thingToCarryGO = collision.gameObject;
+                    originalSortingOrder = thingToCarryGO.GetComponent<SpriteRenderer>().sortingOrder;
+                    thingToCarryGO.GetComponent<Collider2D>().enabled = false;                   
+                    originalLocalScale = thingToCarryGO.transform.localScale;
+                    originalLocalRotation = thingToCarryGO.transform.localEulerAngles;
+                    thingToCarry.OnTake();
                     OnTake.Invoke();
                 }
             }
@@ -81,18 +76,18 @@ namespace LuDK.Toolkit.L2D
         /// </summary>
         public void Consume()
         {
-            if (null != thingToCarryAdvanced)
-            {
-                thingToCarryAdvanced.OnConsume();
-            }
             if (null != thingToCarry)
+            {
+                thingToCarry.OnConsume();
+            }
+            if (null != thingToCarryGO)
             {            
                 OnConsume.Invoke();
-                thingToCarry.SetActive(false);
+                thingToCarryGO.SetActive(false);
             }
-            Destroy(thingToCarry);
             thingToCarry = null;
-            thingToCarryAdvanced = null;
+            thingToCarryGO = null;
+            Destroy(thingToCarryGO);
         }
 
         private void LateUpdate()
@@ -106,39 +101,36 @@ namespace LuDK.Toolkit.L2D
                 bool needToDropCarriedObject = (Input.GetKey(carryKey) && carryMethod == CarryMethod.Stick) 
                     || (!Input.GetKey(carryKey) && carryMethod == CarryMethod.HoldKey);
 
-                if (player.IsFreeToMove() && !needToDropCarriedObject && thingToCarryAdvanced != null)
+                if (player.IsFreeToMove() && !needToDropCarriedObject && thingToCarry != null)
                 {
                     if (Input.GetKeyDown(actionKey))
                     {
-                        thingToCarryAdvanced.ActionStart();
+                        thingToCarry.ActionStart();
                     } else if (Input.GetKeyUp(actionKey))
                     {
-                        thingToCarryAdvanced.ActionEnd();
+                        thingToCarry.ActionEnd();
                     } else if (Input.GetKey(actionKey))
                     {
-                        thingToCarryAdvanced.ActionRun();
+                        thingToCarry.ActionRun();
                     }
                 }
 
-                if (needToDropCarriedObject && player.IsFreeToMove())
+                if (needToDropCarriedObject && player.IsFreeToMove() && thingToCarryGO != null)
                 {
-                    Rigidbody2D body = thingToCarry.GetComponent<Rigidbody2D>();
+                    Rigidbody2D body = thingToCarryGO.GetComponent<Rigidbody2D>();
                     if (null != body)
                     {
                         body.velocity = Vector2.zero;
                     }
                     ignoreNextCollisionDelay = carryMethod == CarryMethod.Stick ? 0.5f : 0.0f;
-                    if (null != thingToCarryAdvanced)
-                    {
-                        thingToCarryAdvanced.OnDrop();
-                    }
-                    thingToCarryAdvanced = null;
-                    thingToCarry.transform.position = gameObject.transform.position + new Vector3(player.IsLookingToRight() ? 0.5f : -0.5f, 0, 0);
-                    thingToCarry.transform.localScale = originalLocalScale;
-                    thingToCarry.transform.localEulerAngles = originalLocalRotation;
-                    thingToCarry.GetComponent<Collider2D>().enabled = true;
-                    thingToCarry.GetComponent<SpriteRenderer>().sortingOrder = originalSortingOrder;
+                    thingToCarry.OnDrop();
                     thingToCarry = null;
+                    thingToCarryGO.transform.position = gameObject.transform.position + new Vector3(player.IsLookingToRight() ? 0.5f : -0.5f, 0, 0);
+                    thingToCarryGO.transform.localScale = originalLocalScale;
+                    thingToCarryGO.transform.localEulerAngles = originalLocalRotation;
+                    thingToCarryGO.GetComponent<Collider2D>().enabled = true;
+                    thingToCarryGO.GetComponent<SpriteRenderer>().sortingOrder = originalSortingOrder;
+                    thingToCarryGO = null;
                     OnDrop.Invoke();
                 }
                 else
@@ -148,24 +140,15 @@ namespace LuDK.Toolkit.L2D
                     if (!player.IsLookingToRight())
                     {
                         newScaleX = -newScaleX;
-                        if (thingToCarryAdvanced != null)
+                        if (thingToCarry != null && !thingToCarry.AlwaysOnTop())
                         {
-                            if (!thingToCarryAdvanced.AlwaysOnTop())
-                            {
-                                newSortingOrder = playerSortingOrder - 1;
-                            }
-                        } else
-                        {
-                            if (!alwaysOnTop)
-                            {
-                                newSortingOrder = playerSortingOrder - 1;
-                            }
+                            newSortingOrder = playerSortingOrder - 1;
                         }
                     }
-                    thingToCarry.GetComponent<SpriteRenderer>().sortingOrder = newSortingOrder;
-                    thingToCarry.transform.localScale = new Vector3(newScaleX, originalLocalScale.y, originalLocalScale.z);
-                    thingToCarry.transform.position = gameObject.transform.position + DeltaPos();
-                    thingToCarry.transform.localEulerAngles = Rotation();
+                    thingToCarryGO.GetComponent<SpriteRenderer>().sortingOrder = newSortingOrder;
+                    thingToCarryGO.transform.localScale = new Vector3(newScaleX, originalLocalScale.y, originalLocalScale.z);
+                    thingToCarryGO.transform.position = gameObject.transform.position + DeltaPos();
+                    thingToCarryGO.transform.localEulerAngles = Rotation();
                 }
             }
         }
@@ -173,9 +156,9 @@ namespace LuDK.Toolkit.L2D
         public Vector3 Rotation()
         {
             Vector3 rotation = Vector3.zero;
-            if (thingToCarryAdvanced != null)
+            if (thingToCarry != null)
             {
-                float rZ = thingToCarryAdvanced.GetHoldingRotation();
+                float rZ = thingToCarry.GetHoldingRotation();
                 if (!player.IsLookingToRight())
                 {
                     rZ *= -1f;
@@ -186,18 +169,14 @@ namespace LuDK.Toolkit.L2D
         }
 
         public Vector3 DeltaPos()
-        {
-            bool lookingToRight = player.IsLookingToRight();
-            float deltaX = carryOnFront ? 0.3f : -0.3f;
-            if (!lookingToRight)
-            {
-                deltaX *= -1f;
-            }
+        {            
+            float deltaX = 0f;
             float deltaY = 0f;
-            if (thingToCarryAdvanced != null)
+            if (thingToCarry != null)
             {
-                deltaX = thingToCarryAdvanced.GetDeltaX(lookingToRight);
-                deltaY = thingToCarryAdvanced.GetDeltaY(lookingToRight);
+                bool lookingToRight = player.IsLookingToRight();
+                deltaX = thingToCarry.GetDeltaX(lookingToRight);
+                deltaY = thingToCarry.GetDeltaY(lookingToRight);
             }            
             return new Vector3(deltaX, deltaY, 0);
         }
@@ -208,7 +187,7 @@ namespace LuDK.Toolkit.L2D
         /// <returns></returns>
         public GameObject GetObject()
         {
-            return thingToCarry;
+            return thingToCarryGO;
         }
 
         public enum CarryMethod
