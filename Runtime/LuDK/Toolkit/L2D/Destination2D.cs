@@ -4,6 +4,8 @@ namespace LuDK.Toolkit.L2D
 {
     public class Destination2D : MonoBehaviour
     {
+        public bool disableTemporarilyTriggerOnTeleporting = true;
+
         private PlayerController2D player { get; set; }
 
         void Start()
@@ -21,6 +23,14 @@ namespace LuDK.Toolkit.L2D
         {
             if (player != null)
             {
+                if (disableTemporarilyTriggerOnTeleporting)
+                {
+                    var trigger = GetComponent<TriggerController2D>();
+                    if (null != trigger)
+                    {
+                        trigger.DisableTemporarily(0.1f);
+                    }
+                }
                 player.transform.position = transform.position;
                 CarryController2D cc = player.GetComponent<CarryController2D>();
                 if (cc != null && cc.GetObject() != null)
