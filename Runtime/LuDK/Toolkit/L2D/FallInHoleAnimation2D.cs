@@ -64,7 +64,8 @@ namespace LuDK.Toolkit.L2D
                     GameObject copyCarriedObject = new GameObject();
                     copyCarriedObject.name = "fallingCarriedObject";
                     copyCarriedObject.transform.parent = fallAnimationGO.transform;
-                    copyCarriedObject.transform.position = fallAnimationGO.transform.position;
+                    copyCarriedObject.transform.position = fallAnimationGO.transform.position + cc.DeltaPos();
+                    copyCarriedObject.transform.localEulerAngles = cc.Rotation();
                     SpriteRenderer copyCarriedObjectSR = copyCarriedObject.AddComponent<SpriteRenderer>();
                     copyCarriedObjectSR.sprite = carryObjectSR.sprite;
                     copyCarriedObjectSR.sortingLayerID = carryObjectSR.sortingLayerID;

@@ -319,6 +319,24 @@ namespace LuDK.Toolkit.L2D
             body.velocity = Vector3.zero;
         }
 
+        public void ChangeSortingLayerName(string newSortingLayerName)
+        {
+            var sr = GetComponent<SpriteRenderer>();
+            if (null != sr)
+            {
+                sr.sortingLayerName = newSortingLayerName;
+            }
+            var cc = GetComponent<CarryController2D>();
+            if (null != cc)
+            {
+                var carriedObjSR = cc.GetObject()?.GetComponent<SpriteRenderer>();
+                if (null != carriedObjSR)
+                {
+                    carriedObjSR.sortingLayerName = newSortingLayerName;
+                }
+            }
+        }
+
         /// <summary>
         /// Force the player to move until he reachs his destination.
         /// See the complete usage with ForcedMove(x, y, offsetX, offsetY, speedFactor, delay)

@@ -170,7 +170,7 @@ namespace LuDK.Toolkit.L2D
             }
         }
 
-        private Vector3 Rotation()
+        public Vector3 Rotation()
         {
             Vector3 rotation = Vector3.zero;
             if (thingToCarryAdvanced != null)
@@ -185,7 +185,7 @@ namespace LuDK.Toolkit.L2D
             return rotation;
         }
 
-        private Vector3 DeltaPos()
+        public Vector3 DeltaPos()
         {
             bool lookingToRight = player.IsLookingToRight();
             float deltaX = carryOnFront ? 0.3f : -0.3f;

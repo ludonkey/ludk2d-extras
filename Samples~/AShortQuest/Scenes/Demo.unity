@@ -725,6 +725,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efcd2907d367aca45a928834099c3997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableTemporarilyTriggerOnTeleporting: 1
 --- !u!212 &139533695
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -793,8 +794,8 @@ MonoBehaviour:
   onEnter:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1025625415}
-        m_MethodName: set_sortingLayerName
+      - m_Target: {fileID: 1025625412}
+        m_MethodName: ChangeSortingLayerName
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8044,6 +8045,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efcd2907d367aca45a928834099c3997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableTemporarilyTriggerOnTeleporting: 1
 --- !u!212 &532439969
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8931,6 +8933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efcd2907d367aca45a928834099c3997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableTemporarilyTriggerOnTeleporting: 1
 --- !u!212 &594493177
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19249,6 +19252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efcd2907d367aca45a928834099c3997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableTemporarilyTriggerOnTeleporting: 1
 --- !u!212 &1148065711
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19792,6 +19796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efcd2907d367aca45a928834099c3997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableTemporarilyTriggerOnTeleporting: 1
 --- !u!212 &1244932365
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -20390,6 +20395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efcd2907d367aca45a928834099c3997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableTemporarilyTriggerOnTeleporting: 1
 --- !u!4 &1351053608
 Transform:
   m_ObjectHideFlags: 0
@@ -21473,8 +21479,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1555377007}
   - component: {fileID: 1555377010}
-  - component: {fileID: 1555377008}
   - component: {fileID: 1555377009}
+  - component: {fileID: 1555377008}
   - component: {fileID: 1555377011}
   m_Layer: 0
   m_Name: Hole1
@@ -21515,17 +21521,6 @@ MonoBehaviour:
   onEnter:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2091101543}
-        m_MethodName: Teleport
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
       - m_Target: {fileID: 1041637712}
         m_MethodName: Play
         m_Mode: 1
@@ -21533,19 +21528,8 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
-          m_FloatArgument: 0
+          m_FloatArgument: 1
           m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 1025625412}
-        m_MethodName: ForcedMove
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 0_0_0_4_3_1
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 84639533}
@@ -21567,7 +21551,40 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 1
+          m_StringArgument: 0_0_0_4_3_1
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2091101543}
+        m_MethodName: Teleport
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1
           m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1025625412}
+        m_MethodName: ForcedMove
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1
+          m_StringArgument: 0_0_0_4_3_1
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1025625412}
+        m_MethodName: ChangeSortingLayerName
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ForeGround
           m_BoolArgument: 1
         m_CallState: 2
   onExit:
@@ -23040,6 +23057,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efcd2907d367aca45a928834099c3997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableTemporarilyTriggerOnTeleporting: 1
 --- !u!212 &1747749189
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -30143,6 +30161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efcd2907d367aca45a928834099c3997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableTemporarilyTriggerOnTeleporting: 1
 --- !u!1 &1930105888
 GameObject:
   m_ObjectHideFlags: 0
@@ -31340,6 +31359,8 @@ GameObject:
   - component: {fileID: 2091101545}
   - component: {fileID: 2091101544}
   - component: {fileID: 2091101543}
+  - component: {fileID: 2091101547}
+  - component: {fileID: 2091101546}
   m_Layer: 0
   m_Name: DestinationHole1
   m_TagString: Untagged
@@ -31359,6 +31380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efcd2907d367aca45a928834099c3997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableTemporarilyTriggerOnTeleporting: 1
 --- !u!212 &2091101544
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -31423,6 +31445,64 @@ Transform:
   m_Father: {fileID: 1022449938}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2091101546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091101542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c379306fb48364c986dda2cbf4e8eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkType: 1
+  consumeObject: 0
+  objectName: 
+  onEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1025625412}
+        m_MethodName: ChangeSortingLayerName
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MiddleGround
+          m_BoolArgument: 0
+        m_CallState: 2
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!61 &2091101547
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091101542}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &2116808078
 GameObject:
   m_ObjectHideFlags: 0
@@ -32102,8 +32182,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2137808038884893096}
   - component: {fileID: 2137808038884893109}
-  - component: {fileID: 2137808038884893111}
   - component: {fileID: 2137808038884893110}
+  - component: {fileID: 2137808038884893099}
   - component: {fileID: 2137808038884893098}
   m_Layer: 0
   m_Name: Hole2
@@ -32124,6 +32204,93 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40d07f1097a09e94a9ba7cb889dab428, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2137808038884893099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2137808038884893097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c379306fb48364c986dda2cbf4e8eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkType: 1
+  consumeObject: 0
+  objectName: 
+  onEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1041637712}
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 84639533}
+        m_MethodName: PlayDelayed
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1.5
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2137808038884893098}
+        m_MethodName: Play
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1
+          m_StringArgument: 0_0_0_4_3_1
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 139533694}
+        m_MethodName: Teleport
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1025625412}
+        m_MethodName: ForcedMove
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1
+          m_StringArgument: 0_0_0_4_3_1
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1025625412}
+        m_MethodName: ChangeSortingLayerName
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ForeGround
+          m_BoolArgument: 1
+        m_CallState: 2
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!212 &2137808038884893109
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -32201,90 +32368,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.6, y: 0.6}
   m_EdgeRadius: 0
---- !u!114 &2137808038884893111
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2137808038884893097}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3c379306fb48364c986dda2cbf4e8eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  checkType: 1
-  consumeObject: 0
-  objectName: 
-  onEnter:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 139533694}
-        m_MethodName: Teleport
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 1041637712}
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 1025625412}
-        m_MethodName: ForcedMove
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 0_0_0_4_3_1
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 84639533}
-        m_MethodName: PlayDelayed
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1.5
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 2137808038884893098}
-        m_MethodName: Play
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 1025625415}
-        m_MethodName: set_sortingLayerName
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: ForeGround
-          m_BoolArgument: 1
-        m_CallState: 2
-  onExit:
-    m_PersistentCalls:
-      m_Calls: []
