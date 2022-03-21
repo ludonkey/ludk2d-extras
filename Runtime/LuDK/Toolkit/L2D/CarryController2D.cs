@@ -10,9 +10,6 @@ namespace LuDK.Toolkit.L2D
         public CarryMethod carryMethod;
         public KeyCode carryKey;
         public KeyCode actionKey;
-        public UnityEvent OnTake;
-        public UnityEvent OnDrop;
-        public UnityEvent OnConsume;
 
         private Carryable thingToCarry;
         private GameObject thingToCarryGO;
@@ -66,7 +63,6 @@ namespace LuDK.Toolkit.L2D
                     originalLocalScale = thingToCarryGO.transform.localScale;
                     originalLocalRotation = thingToCarryGO.transform.localEulerAngles;
                     thingToCarry.OnTake();
-                    OnTake.Invoke();
                 }
             }
         }
@@ -82,12 +78,11 @@ namespace LuDK.Toolkit.L2D
             }
             if (null != thingToCarryGO)
             {            
-                OnConsume.Invoke();
                 thingToCarryGO.SetActive(false);
+                Destroy(thingToCarryGO);
             }
             thingToCarry = null;
             thingToCarryGO = null;
-            Destroy(thingToCarryGO);
         }
 
         private void LateUpdate()
@@ -131,7 +126,6 @@ namespace LuDK.Toolkit.L2D
                     thingToCarryGO.GetComponent<Collider2D>().enabled = true;
                     thingToCarryGO.GetComponent<SpriteRenderer>().sortingOrder = originalSortingOrder;
                     thingToCarryGO = null;
-                    OnDrop.Invoke();
                 }
                 else
                 {
