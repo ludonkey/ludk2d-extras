@@ -266,6 +266,9 @@ namespace LuDK.Toolkit.L2D
             sr.sortingLayerName = PlayerController2D.LAYER_MIDDLEGROUND;
             sr.sortingOrder = 1;
             newObj.AddComponent<PolygonCollider2D>();
+            var rb = newObj.AddComponent<Rigidbody2D>();
+            rb.freezeRotation = true;
+            rb.gravityScale = 0;
             newObj.AddComponent<CarriedObject2D>();
             UnityEditor.Selection.activeObject = newObj;
             return newObj;
