@@ -14,15 +14,15 @@ namespace LuDK.Toolkit.Core
         {
             if (Input.GetKeyDown(key) && OnDown != null)
             {
-                OnDown.Invoke();
+                OnDown?.Invoke();
             }
             if (Input.GetKey(key) && OnAction != null)
             {
-                OnAction.Invoke();
+                OnAction?.Invoke();
             }
             if (Input.GetKeyUp(key) && OnUp != null)
             {
-                OnUp.Invoke();
+                OnUp?.Invoke();
             }
         }
     }

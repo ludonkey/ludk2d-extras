@@ -8322,7 +8322,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trackSpeed: 5
   shakeAmount: 0.3
-  landingTimeForFollowingY: 0.05
+  durationPlayerGroundedBeforeFollowingY: 0.05
 --- !u!114 &548681393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13371,18 +13371,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73851bab253d7ff41892a03897259387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1025625412}
-  moveSpeed: 3
-  flipXAnimation: 0
-  flipYAnimation: 0
+  applyOnStart: 0
+  _moveSpeed: 3
+  _flipXAnimation: 0
+  _flipYAnimation: 0
   sprites:
   - {fileID: 5832130118061997195, guid: ba7c9df867aeeb043b04417f70500c98, type: 3}
   - {fileID: 8149557099830141944, guid: ba7c9df867aeeb043b04417f70500c98, type: 3}
   animationTimeInBetween: 0.1
-  gravityScale: 1
-  jumpFactor: 1.4
+  _jumpEnabled: 1
+  _gravityScale: 1
+  _jumpFactor: 1.4
   inTheAirSprites: []
   inTheAirAnimationTimeInBetween: 0.1
+  OnApply:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUnapply:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &788344689
 Transform:
   m_ObjectHideFlags: 0
@@ -17402,13 +17409,14 @@ MonoBehaviour:
   - {fileID: 8784198924934617523, guid: ffdeeb71be9391342a485b100ad1ae07, type: 3}
   - {fileID: 4897650366947717147, guid: ffdeeb71be9391342a485b100ad1ae07, type: 3}
   animationTimeInBetween: 0.1
+  jumpEnabled: 1
+  worldGravity2D: {x: 0, y: -40}
+  gravityScale: 1
   durationInTheAirConsideredAsGrounded: 0.2
   groundLayer:
     serializedVersion: 2
     m_Bits: 2147484160
-  worldGravity2D: {x: 0, y: -40}
   jumpKey: 32
-  gravityScale: 1
   jumpFactor: 1.4
   inTheAirSprites: []
   inTheAirAnimationTimeInBetween: 0.1

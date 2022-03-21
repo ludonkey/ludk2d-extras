@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LuDK.Toolkit.L2D
 {
@@ -9,17 +10,35 @@ namespace LuDK.Toolkit.L2D
         public bool applyOnStart = false;
 
         [Header("Properties")]
-        public float moveSpeed = 3.0f;
-        public bool flipXAnimation = false;
-        public bool flipYAnimation = false;
+        public float _moveSpeed = 3.0f;
+        public float moveSpeed { get { return _moveSpeed; } set { _moveSpeed = value; } }
+        public bool _flipXAnimation = false;
+        public bool flipXAnimation { get { return _flipXAnimation; } set { _flipXAnimation = value; } }
+        public bool _flipYAnimation = false;
+        public bool flipYAnimation { get { return _flipYAnimation; } set { _flipYAnimation = value; } }
         public List<Sprite> sprites;
         public float animationTimeInBetween = 0.1f;
 
         [Header("Only for Platformer")]
-        public float gravityScale = 1f;
-        public float jumpFactor = 1.4f;
+        public bool _jumpEnabled = true;
+        public bool jumpEnabled { get { return _jumpEnabled; } set { _jumpEnabled = value; } }
+        public float _gravityScale = 1f;
+        public float gravityScale { 
+            get { 
+                return _gravityScale; 
+            } 
+            set { _gravityScale = value;
+                player?.UpdateGravityScale();
+            } 
+        }
+        public float _jumpFactor = 1.4f;
+        public float jumpFactor { get { return _jumpFactor; } set { _jumpFactor = value; } }
         public List<Sprite> inTheAirSprites;
         public float inTheAirAnimationTimeInBetween = 0.1f;
+
+        [Header("Events")]
+        public UnityEvent OnApply;
+        public UnityEvent OnUnapply;
 
         private void Awake()
         {
@@ -48,6 +67,8 @@ namespace LuDK.Toolkit.L2D
             if (player != null)
             {
                 player.skin = this;
+                OnApply?.Invoke();
+                player.UpdateGravityScale();
             }
             else
             {
@@ -60,6 +81,8 @@ namespace LuDK.Toolkit.L2D
             if (null != player)
             {
                 player.skin = null;
+                OnUnapply?.Invoke();
+                player.UpdateGravityScale();
             }
         }
 
@@ -122,6 +145,11 @@ namespace LuDK.Toolkit.L2D
             return animationTimeInBetween;
         }
 
+        public bool JumpEnabled()
+        {
+            return jumpEnabled;
+        }
+
         public float GravityScale()
         {
             return gravityScale;
@@ -151,6 +179,7 @@ namespace LuDK.Toolkit.L2D
         List<Sprite> Sprites();
         float AnimationTimeInBetween();
         //Only for Platformer
+        bool JumpEnabled();
         float GravityScale();
         float JumpFactor();
         List<Sprite> InTheAirSprites();

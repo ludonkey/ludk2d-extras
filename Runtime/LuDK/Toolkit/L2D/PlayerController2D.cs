@@ -36,6 +36,8 @@ namespace LuDK.Toolkit.L2D
         public float AnimationTimeInBetween { get { return skin != null ? skin.AnimationTimeInBetween() : animationTimeInBetween; } }
 
         [Header("Only for Platformer")]
+        public bool jumpEnabled = true;
+        public bool JumpEnabled { get { return skin != null ? skin.JumpEnabled() : jumpEnabled; } }
         public Vector2 worldGravity2D = new Vector2(0, -40);
         public float gravityScale = 1f;
         public float GravityScale { get { return skin != null ? skin.GravityScale() : gravityScale; } }
@@ -143,7 +145,7 @@ namespace LuDK.Toolkit.L2D
             {
                 horizontalMove = Input.GetAxisRaw("Horizontal"); // -1 is left
                 verticalMove = Input.GetAxisRaw("Vertical"); // -1 is down
-                if (gameType == GameType2D.Platformer && Input.GetKeyDown(jumpKey) && consideredAsGrounded)
+                if (gameType == GameType2D.Platformer && Input.GetKeyDown(jumpKey) && consideredAsGrounded && JumpEnabled)
                 {
                     body.velocity = new Vector2(body.velocity.x, 0);
                     body.AddForce(new Vector2(0, 500f * JumpFactor * Mathf.Sign(GravityScale)));
@@ -255,7 +257,7 @@ namespace LuDK.Toolkit.L2D
             UpdateGravityScale();
         }
 
-        private void UpdateGravityScale()
+        public void UpdateGravityScale()
         {
             switch (gameType)
             {
