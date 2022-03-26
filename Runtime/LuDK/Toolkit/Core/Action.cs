@@ -6,7 +6,7 @@ namespace LuDK.Toolkit.Core
     public class Action : MonoBehaviour
     {
         public bool playOnStart = false;
-        public float delay = -1;
+        public float delay = 0;
         public UnityEvent OnAct;
         private float timeBeforeAct = -1;
 
@@ -14,28 +14,28 @@ namespace LuDK.Toolkit.Core
         {
             if (playOnStart)
             {
-                Act();
+                DelayedAct(delay);
             }
         }
 
         public void Act()
-        {          
-            if (OnAct != null)
-            {
-                if (delay > 0)
-                {
-                    DelayedAct(delay);
-                }
-                else
-                {
-                    OnAct.Invoke();
-                }                
-            }
+        {
+            DelayedAct(0);           
         }
 
         public void DelayedAct(float delay)
         {
-            timeBeforeAct = delay;
+            if (OnAct != null)
+            {
+                if (delay > 0)
+                {
+                    timeBeforeAct = delay;
+                }
+                else
+                {
+                    OnAct.Invoke();
+                }
+            }
         }
 
         private void Update()

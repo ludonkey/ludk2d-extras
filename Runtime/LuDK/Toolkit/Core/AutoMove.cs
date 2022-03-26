@@ -94,7 +94,7 @@ namespace LuDK.Toolkit.Core
         public void Play()
         {
             originalPos = gameObject.transform.position;
-            OnPlay.Invoke();
+            OnPlay?.Invoke();
             Reset();
             ResumeInternal();
         }
@@ -104,6 +104,7 @@ namespace LuDK.Toolkit.Core
         /// </summary>
         public void Stop()
         {
+            OnEnd?.Invoke();
             Reset();
             PauseIntenral();
         }

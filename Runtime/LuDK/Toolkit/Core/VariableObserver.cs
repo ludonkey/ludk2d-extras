@@ -98,8 +98,12 @@ namespace LuDK.Toolkit.Core
                     try
                     {
                         System.Object targetObject = OnChangePassValue.GetPersistentTarget(i);
-                        object[] args = { targetValue };
+                        object[] args = new object[] { targetValue };
                         MethodInfo method = targetObject.GetType().GetMethod(OnChangePassValue.GetPersistentMethodName(i));
+                        if (method.GetParameters()[0].ParameterType == typeof(string))
+                        {
+                            args = new object[] { targetValue.ToString() };
+                        }
                         method.Invoke(targetObject, args);
                     }
                     catch (System.Exception exception)
