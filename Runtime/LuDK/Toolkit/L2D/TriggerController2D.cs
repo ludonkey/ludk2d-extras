@@ -13,18 +13,16 @@ namespace LuDK.Toolkit.L2D
             Player = 1,
             CarriedObject = 2,
             DirectObject = 4,
-            Particle = 8
+            Particle = 8,
+            Skin = 16
         }
 
         public CheckType checkType = CheckType.Player;
 
-        [FormerlySerializedAs("consumeCarriedObject")]
         public bool consumeObject = false;
 
-        [FormerlySerializedAs("carryObjectName")]
         public string objectName;
 
-        [FormerlySerializedAs("action")]
         public UnityEvent onEnter;
 
         public UnityEvent onExit;
@@ -87,6 +85,11 @@ namespace LuDK.Toolkit.L2D
 
         private bool Process(GameObject goInContact, bool entered)
         {
+            if (!enabled)
+            {
+                return false;
+            }
+
             if ((checkType & CheckType.Particle) == CheckType.Particle)
             {
                 bool objectIsOk = string.IsNullOrEmpty(objectName) || objectName == goInContact.name;
@@ -171,6 +174,29 @@ namespace LuDK.Toolkit.L2D
                             onExit.Invoke();
                     }
                     return true;
+                }
+            }
+
+            if ((checkType & CheckType.Skin) == CheckType.Skin)
+            {
+                PlayerController2D player = goInContact.GetComponent<PlayerController2D>();
+                if (player != null && player.skin != null)
+                {
+                    bool skinIsOk = string.IsNullOrEmpty(objectName) || objectName == player.skin.Name();
+                    if (skinIsOk)
+                    {
+                        if (entered)
+                        {
+                            if (nbInteractions == 0 && disableTime <= 0)
+                                onEnter.Invoke();
+                        }
+                        else
+                        {
+                            if (nbInteractions == 1 && disableTime <= 0)
+                                onExit.Invoke();
+                        }
+                        return true;
+                    }
                 }
             }
 
