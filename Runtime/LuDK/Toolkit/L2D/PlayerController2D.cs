@@ -324,12 +324,12 @@ namespace LuDK.Toolkit.L2D
 
         public bool IsLookingToRight()
         {
-            return !sr.flipX && !FlipXAnimation;
+            return null != sr && !sr.flipX && !FlipXAnimation;
         }
 
         public bool IsUpsideDown()
         {
-            return sr.flipY;
+            return null != sr && sr.flipY;
         }
 
         private void ResetForcedAnimation()

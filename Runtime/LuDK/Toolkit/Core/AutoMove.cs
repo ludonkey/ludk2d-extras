@@ -9,7 +9,8 @@ namespace LuDK.Toolkit.Core
         {
             None,
             Restart,
-            Yoyo
+            Yoyo,
+            Incr
         }
 
         public bool playOnAwake = true;
@@ -62,7 +63,6 @@ namespace LuDK.Toolkit.Core
                         if (currentTime == duration)
                         {
                             Stop();
-                            break;
                         }
                         break;
                     case LoopType.Restart:
@@ -75,6 +75,13 @@ namespace LuDK.Toolkit.Core
                         if (currentTime == duration || currentTime == 0)
                         {
                             forward = !forward;
+                        }
+                        break;
+                    case LoopType.Incr:
+                        if (currentTime == duration)
+                        {
+                            currentTime = 0;
+                            originalPos = gameObject.transform.position;
                         }
                         break;
                 }

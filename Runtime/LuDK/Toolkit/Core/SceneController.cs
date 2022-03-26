@@ -101,6 +101,35 @@ namespace LuDK.Toolkit.Core
             AudioListener.volume = volume * volumeFactor;
         }
 
+        public void LoadSceneAdditive(string sceneName)
+        {
+            if (DoesSceneExist(sceneName))
+            {
+                SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
+            }
+            else
+            {
+                SceneManager.LoadScene(GetSceneFromEndName(sceneName), LoadSceneMode.Additive);
+            }
+        }
+
+        public void UnloadScene(string sceneName)
+        {
+            if (DoesSceneExist(sceneName))
+            {
+                SceneManager.UnloadSceneAsync(sceneName);
+            }
+            else
+            {
+                SceneManager.UnloadSceneAsync(GetSceneFromEndName(sceneName));
+            }
+        }
+
+        public void ReloadScene()
+        {
+            LoadScene(SceneManager.GetActiveScene().name);
+        }
+
         public void LoadScene(string sceneName)
         {
             if (DoesSceneExist(sceneName))
