@@ -11,6 +11,18 @@ namespace LuDK.Toolkit.L2D
 
         public float trackSpeed = 5;
 
+        public float offsetX = 0;
+
+        public float offsetY = 0;
+
+        public bool followX = true;
+
+        public bool followY = true;
+
+        public bool offsetXFlipWithPlayer = true;
+
+        public bool offsetYFlipWithPlayer = true;
+
         [Header("Shake")]
         private Vector3 posBeforeShaking;
         private float shakeDuration = 0f;
@@ -29,9 +41,7 @@ namespace LuDK.Toolkit.L2D
             player = GameObject.FindObjectOfType<PlayerController2D>();
             if (player != null)
             {
-                Vector3 targetPos = player.transform.position;
-                targetPos.z = transform.position.z;
-                transform.position = targetPos;
+                CenterToPlayer();
             }
         }
 
@@ -67,13 +77,7 @@ namespace LuDK.Toolkit.L2D
                 }
                 if (waitingDelay == 0.0f)
                 {
-                    Vector3 targetPos = player.transform.position;
-                    if (player.gameType == GameType2D.Platformer && timeToWaitAfterLanding > 0)
-                    {
-                        targetPos.y = transform.position.y;
-                    }
-                    targetPos.z = transform.position.z;
-                    transform.position = Vector3.MoveTowards(transform.position, targetPos, trackSpeed * Time.deltaTime);
+                    transform.position = Vector3.MoveTowards(transform.position, GetTargetPosition(), trackSpeed * Time.deltaTime);
                 } else
                 {
                     waitingDelay -= Time.deltaTime;
@@ -113,11 +117,42 @@ namespace LuDK.Toolkit.L2D
             }
         }      
 
-        private void CenterToPlayer()
+        public void CenterToPlayer()
+        {
+            transform.position = GetTargetPosition();
+        }
+
+        private Vector3 GetTargetPosition()
         {
             Vector3 targetPos = player.transform.position;
             targetPos.z = transform.position.z;
-            transform.position = targetPos;
+            Vector3 offset = new Vector3(offsetX, offsetY, 0);
+            if (offsetXFlipWithPlayer && !player.IsLookingToRight())
+            {
+                offset = new Vector3(-offset.x, offset.y, 0);
+            }
+            if (offsetYFlipWithPlayer && player.IsUpsideDown())
+            {
+                offset = new Vector3(offset.x, -offset.y, 0);
+            }
+            targetPos += offset;
+
+            if (player.gameType == GameType2D.Platformer && timeToWaitAfterLanding > 0)
+            {
+                targetPos.y = transform.position.y;
+            }
+
+            if (!followX)
+            {
+                targetPos.x = transform.position.x;
+            }
+
+            if (!followY)
+            {
+                targetPos.y = transform.position.y;
+            }
+
+            return targetPos;
         }
 
 #if UNITY_EDITOR
