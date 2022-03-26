@@ -12,12 +12,18 @@ namespace LuDK.Toolkit.L2D
         [Header("Properties")]
         public float _moveSpeed = 3.0f;
         public float moveSpeed { get { return _moveSpeed; } set { _moveSpeed = value; } }
+
         public bool _flipXAnimation = false;
         public bool flipXAnimation { get { return _flipXAnimation; } set { _flipXAnimation = value; } }
+
         public bool _flipYAnimation = false;
         public bool flipYAnimation { get { return _flipYAnimation; } set { _flipYAnimation = value; } }
+
         public List<Sprite> sprites;
         public float animationTimeInBetween = 0.1f;
+
+        public List<Sprite> idleSprites;
+        public float animationIdleTimeInBetween = 0.1f;
 
         [Header("Only for Platformer")]
         public bool _jumpEnabled = true;
@@ -44,6 +50,8 @@ namespace LuDK.Toolkit.L2D
         {
             if (sprites == null)
                 sprites = new List<Sprite>();
+            if (idleSprites == null)
+                idleSprites = new List<Sprite>();
             if (inTheAirSprites == null)
                 inTheAirSprites = new List<Sprite>();
         }
@@ -52,6 +60,11 @@ namespace LuDK.Toolkit.L2D
         {
             if (applyOnStart)
                 Apply();
+        }
+
+        public string Name()
+        {
+            return gameObject.name;
         }
 
         public void Apply()
@@ -84,6 +97,66 @@ namespace LuDK.Toolkit.L2D
                 OnUnapply?.Invoke();
                 player.UpdateGravityScale();
             }
+        }
+
+        public float MoveSpeed()
+        {
+            return moveSpeed;
+        }
+
+        public bool FlipXAnimation()
+        {
+            return flipXAnimation;
+        }
+
+        public bool FlipYAnimation()
+        {
+            return flipYAnimation;
+        }
+
+        public List<Sprite> Sprites()
+        {
+            return sprites;
+        }
+
+        public float AnimationTimeInBetween()
+        {
+            return animationTimeInBetween;
+        }
+
+        public List<Sprite> IdleSprites()
+        {
+            return idleSprites;
+        }
+
+        public float AnimationIdleTimeInBetween()
+        {
+            return animationTimeInBetween;
+        }
+
+        public bool JumpEnabled()
+        {
+            return jumpEnabled;
+        }
+
+        public float GravityScale()
+        {
+            return gravityScale;
+        }
+
+        public float JumpFactor()
+        {
+            return jumpFactor;
+        }
+
+        public List<Sprite> InTheAirSprites()
+        {
+            return inTheAirSprites;
+        }
+
+        public float InTheAirAnimationTimeInBetween()
+        {
+            return inTheAirAnimationTimeInBetween;
         }
 
 #if UNITY_EDITOR
@@ -119,65 +192,18 @@ namespace LuDK.Toolkit.L2D
             var player = GameObject.FindObjectOfType<PlayerController2D>();
             return player != null;
         }
-
-        public float MoveSpeed()
-        {
-            return moveSpeed;
-        }
-
-        public bool FlipXAnimation()
-        {
-            return flipXAnimation;
-        }
-
-        public bool FlipYAnimation()
-        {
-            return flipYAnimation;
-        }
-
-        public List<Sprite> Sprites()
-        {
-            return sprites;
-        }
-
-        public float AnimationTimeInBetween()
-        {
-            return animationTimeInBetween;
-        }
-
-        public bool JumpEnabled()
-        {
-            return jumpEnabled;
-        }
-
-        public float GravityScale()
-        {
-            return gravityScale;
-        }
-
-        public float JumpFactor()
-        {
-            return jumpFactor;
-        }
-
-        public List<Sprite> InTheAirSprites()
-        {
-            return inTheAirSprites;
-        }
-
-        public float InTheAirAnimationTimeInBetween()
-        {
-            return inTheAirAnimationTimeInBetween;
-        }
 #endif
     }
 
     public interface ISkin2D {
+        string Name();
         float MoveSpeed();
         bool FlipXAnimation();
         bool FlipYAnimation();
         List<Sprite> Sprites();
         float AnimationTimeInBetween();
+        List<Sprite> IdleSprites();
+        float AnimationIdleTimeInBetween();
         //Only for Platformer
         bool JumpEnabled();
         float GravityScale();

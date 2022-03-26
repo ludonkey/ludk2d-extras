@@ -35,6 +35,11 @@ namespace LuDK.Toolkit.L2D
         public float animationTimeInBetween = 0.1f;
         public float AnimationTimeInBetween { get { return skin != null ? skin.AnimationTimeInBetween() : animationTimeInBetween; } }
 
+        public List<Sprite> idleSprites;
+        public List<Sprite> IdleSprites { get { return skin != null ? skin.IdleSprites() : idleSprites; } }
+        public float animationIdleTimeInBetween = 0.1f;
+        public float AnimationIdleTimeInBetween { get { return skin != null ? skin.AnimationIdleTimeInBetween() : animationIdleTimeInBetween; } }
+   
         [Header("Only for Platformer")]
         public bool jumpEnabled = true;
         public bool JumpEnabled { get { return skin != null ? skin.JumpEnabled() : jumpEnabled; } }
@@ -100,6 +105,8 @@ namespace LuDK.Toolkit.L2D
             gracePeriodForJumpEnable = true;
             if (sprites == null)
                 sprites = new List<Sprite>();
+            if (idleSprites == null)
+                idleSprites = new List<Sprite>();
             if (inTheAirSprites == null)
                 inTheAirSprites = new List<Sprite>();
             contactFilter = new ContactFilter2D();
@@ -234,6 +241,17 @@ namespace LuDK.Toolkit.L2D
                     if (currentSpriteIndex >= spritesToUse.Count)
                         currentSpriteIndex = 0;
                 }
+            } else if (IdleSprites.Count > 0)
+            {
+                spritesToUse = IdleSprites;
+                animationEllapsedTime += Time.deltaTime;
+                if (animationEllapsedTime >=  AnimationIdleTimeInBetween)
+                {
+                    animationEllapsedTime = 0;
+                    currentSpriteIndex++;
+                    if (currentSpriteIndex >= spritesToUse.Count)
+                        currentSpriteIndex = 0;
+                }
             }
             if (spritesToUse.Count > currentSpriteIndex)
             {
@@ -307,6 +325,11 @@ namespace LuDK.Toolkit.L2D
         public bool IsLookingToRight()
         {
             return !sr.flipX && !FlipXAnimation;
+        }
+
+        public bool IsUpsideDown()
+        {
+            return sr.flipY;
         }
 
         private void ResetForcedAnimation()
