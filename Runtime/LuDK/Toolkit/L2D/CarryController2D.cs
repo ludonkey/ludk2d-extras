@@ -130,22 +130,43 @@ namespace LuDK.Toolkit.L2D
                 else
                 {
                     float newScaleX = originalLocalScale.x;
-                    int newSortingOrder = 100;
-                    if (!player.IsLookingToRight())
+                    bool isLookingRight = player.IsLookingToRight() && !player.IsGoingUp() && !player.IsGoingDown();
+                    bool isLookingLeft = !player.IsLookingToRight() && !player.IsGoingUp() && !player.IsGoingDown();
+                    bool isLookingDown = !isLookingRight && !isLookingLeft && player.IsGoingDown();
+                    bool isLookingUp = !isLookingRight && !isLookingLeft && player.IsGoingUp();
+
+                    if (!isLookingRight)
                     {
                         newScaleX = -newScaleX;
-                        if (thingToCarry != null && !thingToCarry.AlwaysOnTop())
-                        {
-                            newSortingOrder = playerSortingOrder - 1;
-                        }
                     }
-                    thingToCarryGO.GetComponent<SpriteRenderer>().sortingOrder = newSortingOrder;
+
+                    int newSortingOrder;
+                    if ((thingToCarry != null && thingToCarry.AlwaysOnTop()) || isLookingRight || isLookingDown)
+                    {
+                        newSortingOrder = 100;
+                    } else {
+                        newSortingOrder = playerSortingOrder - 1;
+                    }
+
+                    
+                    var deltaPos =  DeltaPos();
+                    /*if (player.IsGoindUp())
+                    {
+                        deltaPos = new Vector3(-deltaPos.x, deltaPos.y, deltaPos.z);
+                    }*/
+                    if (!player.IsIdle())
+                    {
+                        lastDelta = deltaPos;
+                        thingToCarryGO.GetComponent<SpriteRenderer>().sortingOrder = newSortingOrder;
+                    }
                     thingToCarryGO.transform.localScale = new Vector3(newScaleX, originalLocalScale.y, originalLocalScale.z);
-                    thingToCarryGO.transform.position = gameObject.transform.position + DeltaPos();
+                    thingToCarryGO.transform.position = gameObject.transform.position + lastDelta;
                     thingToCarryGO.transform.localEulerAngles = Rotation();
                 }
             }
         }
+
+        private Vector3 lastDelta;
 
         public Vector3 Rotation()
         {
@@ -168,9 +189,12 @@ namespace LuDK.Toolkit.L2D
             float deltaY = 0f;
             if (thingToCarry != null)
             {
-                bool lookingToRight = player.IsLookingToRight();
-                deltaX = thingToCarry.GetDeltaX(lookingToRight);
-                deltaY = thingToCarry.GetDeltaY(lookingToRight);
+                bool isLookingRight = player.IsLookingToRight() && !player.IsGoingUp() && !player.IsGoingDown();
+                bool isLookingLeft = !player.IsLookingToRight() && !player.IsGoingUp() && !player.IsGoingDown();
+                bool isLookingDown = !isLookingRight && !isLookingLeft && player.IsGoingDown();
+                bool reverse = isLookingRight || isLookingDown;
+                deltaX = thingToCarry.GetDeltaX(reverse);
+                deltaY = thingToCarry.GetDeltaY(reverse);
             }            
             return new Vector3(deltaX, deltaY, 0);
         }
@@ -192,8 +216,8 @@ namespace LuDK.Toolkit.L2D
 
         public interface Carryable
         {
-            float GetDeltaX(bool front);
-            float GetDeltaY(bool front);
+            float GetDeltaX(bool lookingToRight);
+            float GetDeltaY(bool lookingToRight);
             float GetHoldingRotation();
             bool AlwaysOnTop();
             void OnTake();

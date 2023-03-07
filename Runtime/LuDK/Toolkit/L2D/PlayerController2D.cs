@@ -39,8 +39,18 @@ namespace LuDK.Toolkit.L2D
         public List<Sprite> IdleSprites { get { return skin != null ? skin.IdleSprites() : idleSprites; } }
         public float animationIdleTimeInBetween = 0.1f;
         public float AnimationIdleTimeInBetween { get { return skin != null ? skin.AnimationIdleTimeInBetween() : animationIdleTimeInBetween; } }
-   
-        [Header("Only for Platformer")]
+
+        [Header("=== Only for TopDown ===")]
+        public List<Sprite> upSprites;
+        public List<Sprite> UpSprites { get { return skin != null ? skin.UpSprites() : upSprites; } }
+        public float animationUpTimeInBetween = 0.1f;
+        public float AnimationUpTimeInBetween { get { return skin != null ? skin.AnimationUpTimeInBetween() : animationUpTimeInBetween; } }
+        public List<Sprite> downSprites;
+        public List<Sprite> DownSprites { get { return skin != null ? skin.DownSprites() : downSprites; } }
+        public float animationDownTimeInBetween = 0.1f;
+        public float AnimationDownTimeInBetween { get { return skin != null ? skin.AnimationDownTimeInBetween() : animationDownTimeInBetween; } }
+
+        [Header("=== Only for Platformer ===")]
         public bool jumpEnabled = true;
         public bool JumpEnabled { get { return skin != null ? skin.JumpEnabled() : jumpEnabled; } }
         public Vector2 worldGravity2D = new Vector2(0, -40);
@@ -107,6 +117,10 @@ namespace LuDK.Toolkit.L2D
                 sprites = new List<Sprite>();
             if (idleSprites == null)
                 idleSprites = new List<Sprite>();
+            if (upSprites == null)
+                upSprites = new List<Sprite>();
+            if (downSprites == null)
+                downSprites = new List<Sprite>();
             if (inTheAirSprites == null)
                 inTheAirSprites = new List<Sprite>();
             contactFilter = new ContactFilter2D();
@@ -230,33 +244,72 @@ namespace LuDK.Toolkit.L2D
                 sr.flipX = FlipXAnimation;
             }
             // animated sprite
-            var spritesToUse = consideredAsInTheAir ? InTheAirSprites : Sprites;
-            if (body.velocity.magnitude > 0.1f)
+            var spritesToUse = Sprites;
+            float animationTimeInBetween = AnimationTimeInBetween;
+
+            if (consideredAsInTheAir)
             {
-                animationEllapsedTime += Time.deltaTime;
-                if (animationEllapsedTime >= (consideredAsInTheAir ? InTheAirAnimationTimeInBetween : AnimationTimeInBetween))
-                {
-                    animationEllapsedTime = 0;
-                    currentSpriteIndex++;
-                    if (currentSpriteIndex >= spritesToUse.Count)
-                        currentSpriteIndex = 0;
-                }
-            } else if (IdleSprites.Count > 0)
+                spritesToUse = InTheAirSprites;
+                animationTimeInBetween = InTheAirAnimationTimeInBetween;
+            } else
             {
-                spritesToUse = IdleSprites;
-                animationEllapsedTime += Time.deltaTime;
-                if (animationEllapsedTime >=  AnimationIdleTimeInBetween)
+                if (body.velocity.magnitude > 0.1f)
                 {
-                    animationEllapsedTime = 0;
-                    currentSpriteIndex++;
-                    if (currentSpriteIndex >= spritesToUse.Count)
-                        currentSpriteIndex = 0;
+                    bool goingUpOrDown = Mathf.Abs(body.velocity.y) > Mathf.Abs(body.velocity.x);
+                    if (goingUpOrDown)
+                    {
+                        bool goingUp = body.velocity.y > 0;
+                        if (goingUp)
+                        {
+                            spritesToUse = UpSprites.Count > 0 ? UpSprites : Sprites;
+                            animationTimeInBetween = AnimationUpTimeInBetween;
+                        } else
+                        {
+                            spritesToUse = DownSprites.Count > 0 ? DownSprites : Sprites;
+                            animationTimeInBetween = AnimationDownTimeInBetween;
+                        }
+                    }
+                } else
+                {
+                    spritesToUse = IdleSprites;
+                    animationTimeInBetween = AnimationIdleTimeInBetween;
                 }
             }
+            animationEllapsedTime += Time.deltaTime;
+            if (animationEllapsedTime >= animationTimeInBetween)
+            {
+                animationEllapsedTime = 0;
+                currentSpriteIndex++;
+                if (currentSpriteIndex >= spritesToUse.Count)
+                    currentSpriteIndex = 0;
+            }            
             if (spritesToUse.Count > currentSpriteIndex)
             {
                 sr.sprite = spritesToUse[currentSpriteIndex];
             }
+        }
+
+        public bool IsGoingUp()
+        {
+            if (gameType != GameType2D.TopDown) { return false; }
+            if (Mathf.Abs(body.velocity.x) > Mathf.Abs(body.velocity.y)) { return false; }
+            if (null == UpSprites) { return false;  }
+            bool isGoingUp = body.velocity.y > 0;
+            return isGoingUp;
+        }
+
+        public bool IsGoingDown()
+        {
+            if (gameType != GameType2D.TopDown) { return false; }
+            if (Mathf.Abs(body.velocity.x) > Mathf.Abs(body.velocity.y)) { return false; }
+            if (null == DownSprites) { return false; }
+            bool isGoingDown = body.velocity.y < 0;
+            return isGoingDown;
+        }
+
+        public bool IsIdle()
+        {
+            return body.velocity.magnitude <= 0.1f;
         }
 
         public void SetSideScroller(bool isSideScroller)

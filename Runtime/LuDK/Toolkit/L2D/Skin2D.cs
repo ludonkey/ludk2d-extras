@@ -25,7 +25,14 @@ namespace LuDK.Toolkit.L2D
         public List<Sprite> idleSprites;
         public float animationIdleTimeInBetween = 0.1f;
 
-        [Header("Only for Platformer")]
+        [Header("=== Only for TopDown ===")]
+        public List<Sprite> upSprites;
+        public float animationUpTimeInBetween = 0.1f;
+
+        public List<Sprite> downSprites;
+        public float animationDownTimeInBetween = 0.1f;
+
+        [Header("=== Only for Platformer ===")]
         public bool _jumpEnabled = true;
         public bool jumpEnabled { get { return _jumpEnabled; } set { _jumpEnabled = value; } }
         public float _gravityScale = 1f;
@@ -131,7 +138,27 @@ namespace LuDK.Toolkit.L2D
 
         public float AnimationIdleTimeInBetween()
         {
-            return animationTimeInBetween;
+            return animationIdleTimeInBetween;
+        }
+
+        public List<Sprite> UpSprites()
+        {
+            return upSprites;
+        }
+
+        public float AnimationUpTimeInBetween()
+        {
+            return animationUpTimeInBetween;
+        }
+
+        public List<Sprite> DownSprites()
+        {
+            return downSprites;
+        }
+
+        public float AnimationDownTimeInBetween()
+        {
+            return animationDownTimeInBetween;
         }
 
         public bool JumpEnabled()
@@ -204,6 +231,11 @@ namespace LuDK.Toolkit.L2D
         float AnimationTimeInBetween();
         List<Sprite> IdleSprites();
         float AnimationIdleTimeInBetween();
+        //Only for TopDown
+        List<Sprite> UpSprites();
+        float AnimationUpTimeInBetween();
+        List<Sprite> DownSprites();
+        float AnimationDownTimeInBetween();
         //Only for Platformer
         bool JumpEnabled();
         float GravityScale();
